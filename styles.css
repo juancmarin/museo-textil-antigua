@@ -630,42 +630,54 @@ a {
     grid-template-columns: 1fr;
   }
 
-  .visual {
-    height: 30vh;
-    min-height: 190px;
-    order: 1;
+  /* Para reordenar nav → body → patrón → footer en móvil, .content deja de
+     ser un contenedor flex y sus hijos pasan a ser grid items directos. */
+  .content {
+    display: contents;
   }
 
-  .content {
-    order: 2;
+  .nav--stacked {
+    order: 1;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin: 0;
     padding: 1.75rem 1.5rem 0;
   }
 
   .content__body,
   .content__body--center {
+    order: 2;
     max-width: none;
-    margin: 1.25rem 0;
-    padding: 0;
+    margin: 0;
+    padding: 1.25rem 1.5rem 2rem;
+    align-items: center;
   }
 
-  .nav--stacked {
-    flex-direction: row;
-    justify-content: flex-end;
-    gap: 1.5rem;
+  .headline--center {
+    text-align: center;
+    max-width: none;
+  }
+
+  .visual {
+    order: 3;
+    height: 30vh;
+    min-height: 220px;
   }
 
   .footer {
-    flex-direction: column;
+    order: 4;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
+    justify-content: space-between;
+    text-align: left;
     gap: 1rem;
-    margin-left: -1.5rem;
-    margin-right: -1.5rem;
-    padding: 1.25rem 1.5rem;
+    margin: 0;
+    padding: 1.1rem 1.5rem;
   }
 
   .footer__legal {
-    text-align: center;
+    text-align: right;
   }
 
   /* Conócenos -> apilado */
