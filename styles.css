@@ -799,9 +799,9 @@ a {
     margin: 0;
   }
 
-  /* patron_2 a ancho completo en móvil */
+  /* En móvil ocultamos el patrón inferior (solo va en desktop) */
   .conoce__pattern--bottom {
-    width: 100%;
+    display: none;
   }
 
   /* Los patrones pasan a ser bandas full-width entre secciones, de borde a borde */
