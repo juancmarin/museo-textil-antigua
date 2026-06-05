@@ -705,50 +705,117 @@ a {
     text-align: right;
   }
 
-  /* Conócenos -> apilado */
+  /* Conócenos topbar móvil: padding 26px 27px, logo 37x32 + nav gap 38px */
   .topbar {
-    flex-wrap: wrap;
-    gap: 1.25rem;
-    padding: 1.5rem;
+    flex-wrap: nowrap;
+    gap: 38px;
+    padding: 26px 27px;
+    height: 84px;
+  }
+
+  .topbar__logo {
+    width: 37px;
+    height: auto;
+  }
+
+  .topbar__nav {
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  .topbar__nav .nav__link {
+    font-size: 16px;
+  }
+
+  .topbar__nav .nav__link--active {
+    font-size: 14px;
   }
 
   .conoce__main {
-    padding: 0.5rem 1.5rem 2.5rem;
+    padding: 50px 0 70px;
+    gap: 25px;
   }
 
   .conoce__intro,
   .conoce__cols {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 25px;
   }
 
-  /* En móvil el texto usa el ancho disponible y sin indent ni padding lateral extra */
+  .conoce__cols {
+    gap: 54.72px;
+  }
+
   .conoce__intro-text {
-    padding-left: 0;
+    padding-left: 27px;
+    padding-right: 27px;
     max-width: none;
+    gap: 16.09px;
+    display: flex;
+    flex-direction: column;
   }
 
   .conoce__col {
-    padding-right: 0;
+    padding-left: 27px;
+    padding-right: 27px;
+    align-items: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 17.70px;
+  }
+
+  .conoce__col > :first-child {
+    align-self: stretch;
   }
 
   .conoce__col .body-text,
   .body-text {
     padding-left: 0;
+    max-width: 256.71px;
+    font-size: 11.80px;
+    line-height: 1.35;
+  }
+
+  .conoce__intro-text .body-text {
     max-width: none;
+    font-size: 12.88px;
+  }
+
+  .display-title {
+    font-size: 30px;
+    line-height: 32.19px;
+    margin: 0;
+    max-width: none;
+    font-weight: 900;
+  }
+
+  .conoce__col .display-title {
+    line-height: 29.50px;
+  }
+
+  .lead {
+    font-size: 12.88px;
+    line-height: 1.3;
+    margin: 0;
   }
 
   /* patron_2 a ancho completo en móvil */
   .conoce__pattern--bottom {
-    width: calc(100% + 3rem);
+    width: 100%;
   }
 
   /* Los patrones pasan a ser bandas full-width entre secciones, de borde a borde */
   .conoce__pattern {
     order: 2;
-    width: calc(100% + 3rem);
-    margin-left: -1.5rem;
-    margin-right: -1.5rem;
+    width: 100%;
+    margin: 0;
+    height: 209px;
+    object-fit: cover;
+  }
+
+  /* En móvil el footer de Conócenos hereda los mismos paddings que el resto */
+  .conoce .footer {
+    padding: 17px 30px 16px;
   }
 }
 
