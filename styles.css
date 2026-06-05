@@ -656,9 +656,24 @@ a {
     align-items: center;
   }
 
+  /* Solo home: padding y gap específicos del Figma móvil */
+  .content__body--center {
+    padding: 68px 61px 67px 60px;
+    gap: 42px;
+  }
+
+  .content__body--center .brand {
+    margin-bottom: 0;
+  }
+
   .headline--center {
     text-align: center;
     max-width: none;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 400;
+    font-variation-settings: 'EXPO' 0;
+    color: var(--black);
   }
 
   .visual {
