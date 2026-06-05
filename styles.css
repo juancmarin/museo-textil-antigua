@@ -625,9 +625,11 @@ a {
    RESPONSIVE — móvil
    ========================================================================= */
 @media (max-width: 768px) {
-  /* Layout de dos columnas -> una columna */
+  /* Layout de dos columnas -> una columna; el patrón llena el espacio
+     restante entre el body y el footer (1fr) para que no haya hueco. */
   .layout {
     grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr auto;
   }
 
   /* Para reordenar nav → body → patrón → footer en móvil, .content deja de
@@ -661,7 +663,6 @@ a {
 
   .visual {
     order: 3;
-    height: 30vh;
     min-height: 220px;
   }
 
