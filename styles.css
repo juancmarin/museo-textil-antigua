@@ -212,6 +212,15 @@ a {
   margin-right: -1.8vw;
 }
 
+/* Logo dentro de nav--inline (solo se muestra en móvil) */
+.nav__brand {
+  display: none;
+}
+
+.nav__links {
+  display: contents;
+}
+
 /* =========================================================================
    CUERPO CENTRAL
    ========================================================================= */
@@ -645,6 +654,42 @@ a {
     gap: 1.5rem;
     margin: 0;
     padding: 32px 27px;
+  }
+
+  /* Síguenos móvil: topbar con logo + nav (Síguenos activo, Conócenos) */
+  .nav--inline {
+    order: 1;
+    margin: 0;
+    padding: 26px 27px;
+    gap: 38px;
+    align-items: center;
+  }
+
+  .form-page .nav__brand {
+    display: block;
+    width: 37px;
+    height: 32px;
+  }
+
+  .form-page .nav__brand img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .form-page .nav__links {
+    display: flex;
+    flex: 1 1 0;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .form-page .nav__link {
+    font-size: 16px;
+  }
+
+  .form-page .nav__link--active {
+    font-size: 14px;
   }
 
   .content__body,
