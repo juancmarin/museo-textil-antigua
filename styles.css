@@ -713,7 +713,7 @@ a {
     width: 302px;
     max-width: calc(100% - 3rem);
     padding: 0;
-    margin: 1.5rem auto;
+    margin: 1.5rem auto calc(1.5rem + 40px);
     align-items: stretch;
   }
 
