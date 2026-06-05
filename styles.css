@@ -739,6 +739,7 @@ a {
   .conoce__intro,
   .conoce__cols {
     grid-template-columns: 1fr;
+    justify-items: center;
     gap: 25px;
   }
 
@@ -747,17 +748,18 @@ a {
   }
 
   .conoce__intro-text {
-    padding-left: 27px;
-    padding-right: 27px;
-    max-width: none;
+    width: 302px;
+    max-width: 100%;
+    padding: 0;
     gap: 16.09px;
     display: flex;
     flex-direction: column;
   }
 
   .conoce__col {
-    padding-left: 27px;
-    padding-right: 27px;
+    width: 302px;
+    max-width: 100%;
+    padding: 0;
     align-items: flex-start;
     display: flex;
     flex-direction: column;
