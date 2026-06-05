@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Síguenos — MUTEX</title>
+  <meta
+    name="description"
+    content="Inscríbete para recibir más información sobre la inauguración del Museo Textil de Antigua y nuestra colección."
+  />
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="page form-page">
+  <main class="layout">
+    <!-- ============ Columna izquierda: motivo textil ============ -->
+    <aside class="visual" aria-hidden="true">
+      <img
+        class="visual__art"
+        src="assets/motivo-textil.gif"
+        alt=""
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      />
+      <svg class="visual__fallback" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" role="presentation">
+        <defs>
+          <pattern id="huipil" width="50" height="50" patternUnits="userSpaceOnUse">
+            <rect width="50" height="50" fill="transparent" />
+            <path d="M25 3 L47 25 L25 47 L3 25 Z" fill="#000" />
+            <path d="M25 14 L36 25 L25 36 L14 25 Z" fill="#e8e5d9" />
+            <rect x="22" y="22" width="6" height="6" fill="#000" />
+          </pattern>
+        </defs>
+        <rect width="300" height="300" fill="url(#huipil)" />
+      </svg>
+    </aside>
+
+    <!-- ============ Columna derecha: contenido ============ -->
+    <div class="content">
+      <nav class="nav nav--inline" aria-label="Navegación principal">
+        <a class="nav__link nav__link--active" href="siguenos.html" aria-current="page">Síguenos</a>
+        <a class="nav__link" href="conocenos.html">Conócenos</a>
+      </nav>
+
+      <div class="content__body">
+        <a class="brand brand--form brand--black" href="index.html" aria-label="Inicio MUTEX">
+          <img
+            class="brand__wordmark"
+            src="assets/logo-mutex-siguenos.svg"
+            alt="MUTEX"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+          />
+          <span class="brand__fallback" aria-hidden="true">MU<br />TEX</span>
+        </a>
+
+        <!-- Vista del formulario -->
+        <div id="form-view">
+          <h1 class="headline">¡El Museo Textil de Antigua pronto abrirá sus puertas!</h1>
+          <p class="subhead">
+            Inscríbete para recibir más información sobre la inauguración y nuestra colección.
+          </p>
+
+          <form
+            id="newsletter-form"
+            class="form"
+            action="https://formspree.io/f/mvznzgnn"
+            method="POST"
+            novalidate
+          >
+            <div class="field">
+              <label class="field__label" for="nombre">NOMBRE*</label>
+              <input
+                class="field__input"
+                type="text"
+                id="nombre"
+                name="nombre"
+                placeholder="Tu nombre"
+                autocomplete="given-name"
+                required
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="apellido">APELLIDO*</label>
+              <input
+                class="field__input"
+                type="text"
+                id="apellido"
+                name="apellido"
+                placeholder="Tu apellido"
+                autocomplete="family-name"
+                required
+              />
+            </div>
+            <div class="field">
+              <label class="field__label" for="email">EMAIL*</label>
+              <input
+                class="field__input"
+                type="email"
+                id="email"
+                name="email"
+                placeholder="ejemplo@tuemail.com"
+                autocomplete="email"
+                required
+              />
+            </div>
+            <button class="btn" type="submit">ENVIAR</button>
+            <p id="form-message" class="form__message" role="status" aria-live="polite" hidden></p>
+          </form>
+        </div>
+
+        <!-- Vista de confirmación (estado ¡Registro exitoso! del diseño) -->
+        <div id="success-view" hidden>
+          <h1 class="headline success__title">¡Registro exitoso!</h1>
+          <p class="subhead">Pronto recibirás más información.</p>
+        </div>
+      </div>
+
+      <!-- ============ Footer ============ -->
+      <footer class="footer">
+        <ul class="social" aria-label="Redes sociales">
+          <li><a class="social__link" href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a></li>
+          <li><a class="social__link" href="#" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.3-1.5 1.6-1.5H17V4.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.1V10.5H8v3h2.5V21h3Z"/></svg></a></li>
+          <li><a class="social__link" href="#" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3.5 20.5l1.2-4.1A8 8 0 1 1 8 19.4L3.5 20.5Z" stroke-linejoin="round"/><path d="M9 8.2c.2-.5.4-.5.7-.5h.5c.2 0 .4 0 .6.5l.7 1.6c.1.2 0 .4-.1.6l-.4.5c-.1.2-.2.3 0 .6.3.5.8 1.1 1.4 1.5.5.3.7.3.9.1l.5-.5c.2-.2.4-.2.6-.1l1.5.8c.2.1.3.3.3.4 0 .9-.7 1.6-1.3 1.7-.6.1-1.3.2-3.4-.9-2.1-1.2-3.2-3.4-3.3-3.6-.1-.2-.7-1.1-.7-2 0-.9.5-1.3.7-1.6Z" fill="currentColor" stroke="none"/></svg></a></li>
+          <li><a class="social__link" href="mailto:hola@mutex.gt" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" stroke-linejoin="round"/></svg></a></li>
+        </ul>
+        <p class="footer__legal">Antigua, Guatemala<br />© 2026 MUTEX</p>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var form = document.getElementById('newsletter-form');
+      var nombre = document.getElementById('nombre');
+      var apellido = document.getElementById('apellido');
+      var email = document.getElementById('email');
+      var submitBtn = form.querySelector('button[type="submit"]');
+      var message = document.getElementById('form-message');
+      var formView = document.getElementById('form-view');
+      var successView = document.getElementById('success-view');
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        message.hidden = true;
+        message.classList.remove('form__message--error');
+
+        if (!nombre.value.trim() || !apellido.value.trim() || !email.value || !email.checkValidity()) {
+          message.hidden = false;
+          message.textContent = 'Completa todos los campos con datos válidos.';
+          message.classList.add('form__message--error');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        var originalLabel = submitBtn.textContent;
+        submitBtn.textContent = 'ENVIANDO…';
+
+        try {
+          var res = await fetch(form.action, {
+            method: 'POST',
+            headers: { Accept: 'application/json' },
+            body: new FormData(form),
+          });
+          if (!res.ok) throw new Error('Formspree responded ' + res.status);
+          formView.hidden = true;
+          successView.hidden = false;
+        } catch (err) {
+          message.hidden = false;
+          message.textContent = 'No pudimos enviar el formulario. Inténtalo de nuevo.';
+          message.classList.add('form__message--error');
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

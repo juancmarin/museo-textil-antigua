@@ -1,0 +1,722 @@
+/* =========================================================================
+   MUTEX — Museo Textil de Antigua
+   Mini-sitio de pre-apertura (coming soon)
+   Pantallas: index (hero) · siguenos (formulario + confirmación) · conocenos
+   ========================================================================= */
+
+/* -------------------------------------------------------------------------
+   TIPOGRAFÍA CUSTOM (Federico Parra) — pendiente de licencia web.
+
+   El museo usa una fuente custom de Federico Parra (incluye una variante
+   "mosaico" para el wordmark MU TEX y los títulos display). Mientras no haya
+   licencia web, usamos "Zilla Slab" (Google Fonts) como equivalente del slab
+   serif, y para el efecto mosaico se exportan los wordmarks como imagen (ver
+   /assets y el README).
+
+   Cuando llegue la licencia: descomentar este bloque, poner los archivos en
+   assets/fonts/, y cambiar --font-display / --font-body en :root.
+
+   @font-face {
+     font-family: 'Federico Parra';
+     src: url('assets/fonts/federico-parra.woff2') format('woff2');
+     font-weight: 400 700;
+     font-style: normal;
+     font-display: swap;
+   }
+   ------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------
+   FUENTE DE CUERPO "Exposure" (205TF) — variable, self-hosted.
+   Eje custom EXPO (-100..100, default 0); NO tiene eje de peso (wght),
+   así que el "bold" se logra con font-variation-settings: 'EXPO' <n>
+   (ver utilidades --expo-bold abajo), no con font-weight.
+   ------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Exposure';
+  src: url('assets/fonts/205TF-Exposure-ExposureVAR.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Exposure';
+  src: url('assets/fonts/205TF-Exposure-ExposureVARItalic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* -------------------------------------------------------------------------
+   FUENTE DISPLAY "MTA" (mosaico, Federico Parra) — self-hosted.
+   Usada en los títulos display de Conócenos. Archivos en assets/fonts/.
+   ------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'MTA';
+  src: url('assets/fonts/MTA-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MTA';
+  src: url('assets/fonts/MTA-Negrita.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MTA';
+  src: url('assets/fonts/MTA-Itálica.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+/* Variantes decorativas disponibles si se quieren usar más adelante */
+@font-face {
+  font-family: 'MTA Contorno';
+  src: url('assets/fonts/MTA-Contorno.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'MTA Doble';
+  src: url('assets/fonts/MTA-Doble.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Paleta extraída del diseño de Figma */
+  --cream: #e8e5d9;
+  --cream-light: #f1eee4;
+  --black: #000000;
+  --orange: #ff6927;
+
+  /* Cambiar a 'Federico Parra' cuando exista licencia (ver bloque de arriba) */
+  --font-display: 'Exposure', 'Zilla Slab', Georgia, serif;
+  --font-body: 'Exposure', 'Zilla Slab', Georgia, serif;
+  /* Fuente mosaico para títulos display (Conócenos) */
+  --font-mosaic: 'MTA', 'Zilla Slab', serif;
+  /* Eje EXPO de Exposure: va al revés (negativo = más grueso). -100 = "negrita". */
+  --expo-bold: -100;
+
+  --border: 1.5px solid var(--black);
+  --maxw-content: 30rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--black);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+/* =========================================================================
+   LAYOUT DE DOS COLUMNAS (hero · formulario · confirmación)
+   ========================================================================= */
+.layout {
+  display: grid;
+  /* Columna del motivo textil (rombos) = 56% del ancho; contenido = 44% */
+  grid-template-columns: 56% 44%;
+  min-height: 100vh;
+}
+
+/* ---------- Columna izquierda: motivo textil ---------- */
+.visual {
+  position: relative;
+  background: var(--cream);
+  overflow: hidden;
+}
+
+.visual__art,
+.visual__fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* El SVG de respaldo arranca oculto; el onerror del <img> lo muestra si el
+   asset real todavía no existe. */
+.visual__fallback {
+  display: none;
+}
+
+/* ---------- Columna derecha: contenido ---------- */
+.content {
+  display: flex;
+  flex-direction: column;
+  padding: 2.5rem 4vw 0;
+}
+
+/* =========================================================================
+   NAV
+   ========================================================================= */
+.nav__link {
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* Figma usa la instancia Exposure VAR:0 (eje EXPO neutro = peso regular),
+     no la variante pesada; el item de nav va en peso normal. */
+  font-variation-settings: 'EXPO' 0;
+  font-size: 1rem;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  color: var(--black);
+}
+
+.nav__link--active {
+  color: var(--orange);
+  text-decoration: none;
+}
+
+/* Nav apilado, alineado a la derecha (pantalla de inicio / hero) */
+.nav--stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.9rem;
+  margin-right: -1.8vw;
+}
+
+/* Nav en línea (pantalla Síguenos): activo a la izquierda, link a la derecha */
+.nav--inline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: -1.8vw;
+  margin-right: -1.8vw;
+}
+
+/* =========================================================================
+   CUERPO CENTRAL
+   ========================================================================= */
+.content__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: var(--maxw-content);
+  padding: 2rem 0;
+}
+
+.content__body--center {
+  align-items: center;
+  text-align: center;
+  margin: 0 auto;
+}
+
+/* ---------- Wordmark ---------- */
+.brand {
+  margin-bottom: 1.25rem;
+}
+
+.brand--hero {
+  margin-bottom: 2rem;
+}
+
+.brand__wordmark {
+  height: auto;
+}
+
+.brand--hero .brand__wordmark {
+  /* +20% respecto a clamp(180px, 24vw, 300px) */
+  width: clamp(216px, 28.8vw, 360px);
+  margin: 0 auto;
+}
+
+.brand--form .brand__wordmark {
+  /* +15% sobre el tamaño base (clamp 160/20vw/240 -> 184/23vw/276) */
+  width: clamp(184px, 23vw, 276px);
+}
+
+/* Fallback de texto cuando el wordmark mosaico aún no está exportado */
+.brand__fallback {
+  display: none;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: 'EXPO' var(--expo-bold);
+  font-size: clamp(3.5rem, 7vw, 6rem);
+  line-height: 0.82;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.brand--orange .brand__fallback {
+  color: var(--orange);
+}
+
+.brand--black .brand__fallback {
+  color: var(--black);
+}
+
+/* ---------- Titulares ---------- */
+/* Figma node 1:543: Exposure VAR:0 (EXPO neutro/regular), 20px, negro.
+   No es un display pesado; es un párrafo de llamado debajo del wordmark. */
+.headline {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: 'EXPO' 0;
+  font-size: clamp(1.05rem, 1.39vw, 1.25rem);
+  line-height: 1.25;
+  color: var(--black);
+  margin: 0 0 calc(1rem + 20px);
+}
+
+.headline--center {
+  text-align: left;
+  max-width: 22rem;
+}
+
+.subhead {
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 0 0 1.75rem;
+  max-width: 24rem;
+}
+
+/* Estado de confirmación (¡Registro exitoso!) */
+.success__title {
+  color: var(--orange);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.02;
+  margin-bottom: 0.75rem;
+}
+
+/* =========================================================================
+   FORMULARIO
+   ========================================================================= */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.field {
+  position: relative;
+  border: 1px solid #FF6927;
+  border-radius: 12px;
+  padding: 0.55rem 0.9rem 0.45rem;
+  background: transparent;
+}
+
+.field__label {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-variation-settings: 'EXPO' 0;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.15rem;
+}
+
+.field__input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--black);
+  padding: 0;
+}
+
+.field__input::placeholder {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.field__input:focus {
+  outline: none;
+}
+
+.field:focus-within {
+  border-color: var(--orange);
+}
+
+.btn {
+  margin-top: 0.4rem;
+  width: 100%;
+  padding: 0.85rem 2rem;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-variation-settings: 'EXPO' 0;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.05s ease;
+}
+
+.btn:hover {
+  filter: brightness(0.94);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.form__message {
+  margin: 0.25rem 0 0;
+  font-size: 0.95rem;
+}
+
+.form__message--error {
+  color: #b3300c;
+}
+
+/* =========================================================================
+   FOOTER (barra negra con redes + legal)
+   ========================================================================= */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  /* Llenar el ancho completo de la columna derecha (Figma: la barra negra
+     va desde donde termina el motivo hasta el borde derecho del viewport,
+     sin gaps laterales). .content tiene padding 2.5rem 4vw 0. */
+  margin-left: -4vw;
+  margin-right: -4vw;
+  margin-bottom: 0;
+  padding: 1.1rem 2.2vw;
+  background: var(--black);
+  color: var(--cream);
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.social__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--orange);
+  transition: opacity 0.15s ease;
+}
+
+.social__link svg {
+  width: 100%;
+  height: 100%;
+}
+
+.social__link:hover {
+  opacity: 0.75;
+}
+
+.footer__legal {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-variation-settings: 'EXPO' 0;
+  font-size: 0.78rem;
+  line-height: 1.3;
+  text-align: right;
+}
+
+/* =========================================================================
+   PÁGINA CONÓCENOS (contenido de ancho completo)
+   ========================================================================= */
+.conoce {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Barra superior: logo a la izquierda + nav */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 3vw;
+  padding: 1.75rem 2.2vw;
+}
+
+.topbar__logo {
+  width: 64px;
+  height: auto;
+}
+
+.topbar__logo-fallback {
+  display: none;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-variation-settings: 'EXPO' var(--expo-bold);
+  font-size: 1.4rem;
+  line-height: 0.82;
+  text-transform: uppercase;
+}
+
+.topbar__nav {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Contenido — full-bleed (sin padding lateral); los textos llevan su propio
+   margen. Las proporciones (%) y los anchos en vw replican el archivo a 1440px. */
+/* Llena el viewport vertical entre topbar y footer; las dos secciones
+   se distribuyen para ocupar todo el alto sin scroll. */
+.conoce__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2vh 0;
+  gap: 2vh;
+}
+
+/* Margen lateral del texto = 5.4vw (≈78px a 1440) */
+:root {
+  --conoce-margin: 5.4vw;
+}
+
+/* Footer alineado con la topbar (logo MUTEX a la izquierda, Síguenos a la derecha) */
+.conoce .footer {
+  margin-left: 0;
+  margin-right: 0;
+  padding: 1.1rem 2.2vw;
+}
+
+/* Intro: texto (izquierda, col 0-30%) + patrón ancho (derecha, 30-100% al borde) */
+.conoce__intro {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  align-items: start;
+}
+
+.conoce__intro-text {
+  padding-left: var(--conoce-margin);
+  padding-right: 2vw;
+  max-width: 16.8rem;
+  box-sizing: content-box;
+}
+
+/* Patrón inferior (izq, 0-40%) + dos columnas de texto (40-65.8% / 65.8-100%) */
+.conoce__cols {
+  display: grid;
+  grid-template-columns: 40% 25.8% 34.2%;
+  align-items: start;
+}
+
+.conoce__col {
+  position: relative;
+  padding-right: 2vw;
+}
+
+/* La segunda columna empieza en x=40%, la tercera en 65.8% (ya por el grid).
+   El cuerpo de texto va indentado respecto al título/lead, como en el diseño. */
+.conoce__col .body-text {
+  padding-left: 2.6rem;
+  max-width: 20.4rem;
+}
+
+/* Los saltos de línea de títulos y leads de columna se controlan con <br>
+   en el HTML (la métrica de MTA difiere de la fuente original). */
+.conoce__col .display-title,
+.conoce__col .lead {
+  max-width: none;
+}
+
+/* Patrones textiles a tamaño natural (proporción vw → idéntico a 1440) */
+.conoce__pattern {
+  height: auto;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
+/* Banda superior: llena la columna derecha (70% = ~1010px a 1440), al borde */
+.conoce__pattern--top {
+  width: 100%;
+  align-self: start;
+  margin-top: 0.5rem;
+}
+
+/* Banda inferior: tamaño natural (544px ≈ 37.8vw), pegada al borde izquierdo */
+.conoce__pattern--bottom {
+  width: 37.8vw;
+  align-self: start;
+  margin-top: 0.5rem;
+}
+
+/* Título display con la variante MTA Doble (Federico Parra).
+   La fuente dibuja cada letra como una malla de rombos (tejido textil): a
+   tamaños pequeños el antialiasing emborrona los diamantes, por eso se fija
+   un tamaño/piso alto que respeta la métrica de Figma (≈36.66px a 1440px,
+   2.78vw → 40px para el título de bienvenida). line-height = 1 y sin
+   letter-spacing extra, tal como el diseño. */
+.display-title {
+  font-family: 'MTA Doble', var(--font-mosaic);
+  font-weight: 400;
+  font-size: clamp(1.8rem, 2.55vw, 2.29rem);
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin: 0 0 0.9rem;
+  max-width: 16rem;
+}
+
+/* Título de bienvenida: 40px a 1440px (Figma node 1:398) */
+.conoce__intro-text .display-title {
+  font-size: clamp(2rem, 2.78vw, 2.5rem);
+}
+
+.lead {
+  color: var(--orange);
+  font-weight: 400;
+  /* Subtítulo = Exposure VAR:0 (eje EXPO neutro), idéntico al cuerpo salvo el
+     color naranja (Figma node 1:399). 16px a la métrica del diseño. */
+  font-variation-settings: 'EXPO' 0;
+  font-size: clamp(0.95rem, 1.11vw, 1rem);
+  line-height: 1.35;
+  margin: 0 0 1rem;
+}
+
+.body-text {
+  font-size: clamp(0.8rem, 0.85vw, 1rem);
+  line-height: 1.4;
+  margin: 0;
+  max-width: 20.4rem;
+}
+
+
+/* =========================================================================
+   RESPONSIVE — móvil
+   ========================================================================= */
+@media (max-width: 768px) {
+  /* Layout de dos columnas -> una columna */
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .visual {
+    height: 30vh;
+    min-height: 190px;
+    order: 1;
+  }
+
+  .content {
+    order: 2;
+    padding: 1.75rem 1.5rem 0;
+  }
+
+  .content__body,
+  .content__body--center {
+    max-width: none;
+    margin: 1.25rem 0;
+    padding: 0;
+  }
+
+  .nav--stacked {
+    flex-direction: row;
+    justify-content: flex-end;
+    gap: 1.5rem;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .footer__legal {
+    text-align: center;
+  }
+
+  /* Conócenos -> apilado */
+  .topbar {
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+
+  .conoce__main {
+    padding: 0.5rem 1.5rem 2.5rem;
+  }
+
+  .conoce__intro,
+  .conoce__cols {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  /* En móvil el texto usa el ancho disponible y sin indent ni padding lateral extra */
+  .conoce__intro-text {
+    padding-left: 0;
+    max-width: none;
+  }
+
+  .conoce__col {
+    padding-right: 0;
+  }
+
+  .conoce__col .body-text,
+  .body-text {
+    padding-left: 0;
+    max-width: none;
+  }
+
+  /* patron_2 a ancho completo en móvil */
+  .conoce__pattern--bottom {
+    width: calc(100% + 3rem);
+  }
+
+  /* Los patrones pasan a ser bandas full-width entre secciones, de borde a borde */
+  .conoce__pattern {
+    order: 2;
+    width: calc(100% + 3rem);
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .content__body {
+    max-width: 34rem;
+  }
+}

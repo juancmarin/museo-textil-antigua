@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Patrón textil claro (provisional) para los bloques decorativos de Conócenos.
+  Reemplazar por el patrón real exportado desde Figma si se desea mayor fidelidad.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#e8e5d9"/>
+  <g fill="#f6f3ea">
+    <path d="M32 4 L60 32 L32 60 L4 32 Z"/>
+  </g>
+  <g fill="#e8e5d9">
+    <path d="M32 16 L48 32 L32 48 L16 32 Z"/>
+  </g>
+  <g fill="#f6f3ea">
+    <path d="M32 24 L40 32 L32 40 L24 32 Z"/>
+    <rect x="0" y="0" width="6" height="6"/>
+    <rect x="58" y="0" width="6" height="6"/>
+    <rect x="0" y="58" width="6" height="6"/>
+    <rect x="58" y="58" width="6" height="6"/>
+  </g>
+</svg>
