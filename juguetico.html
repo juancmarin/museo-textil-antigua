@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2D2520">
+<title>Juguetico — MUTEX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --achiote: #FF6927;
+    --sacbe: #E8E5D9;
+    --dark: #2D2520;
+    --mid: #6B5E54;
+    --light-bg: #F5F3ED;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+    background: var(--sacbe);
+    color: var(--dark);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; }
+  a { color: inherit; }
+
+  .view {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+  .view[hidden] { display: none; }
+
+  /* ─── Editor ─── */
+  #editor-view { background: var(--sacbe); }
+
+  .topbar {
+    background: var(--dark);
+    padding: 14px 20px;
+  }
+  .topbar__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .topbar__brand-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .topbar__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--achiote);
+  }
+  .topbar__brand {
+    color: var(--sacbe);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .topbar__title {
+    color: var(--sacbe);
+    font-size: 20px;
+    font-weight: 700;
+    margin: 4px 0 0;
+    letter-spacing: -0.02em;
+  }
+  .topbar__subtitle {
+    color: rgba(232, 229, 217, 0.6);
+    font-size: 13px;
+    margin: 6px 0 0;
+    line-height: 1.4;
+  }
+
+  .btn-gallery {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 8px 14px;
+    color: var(--sacbe);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+  .btn-gallery .badge {
+    background: var(--achiote);
+    color: #fff;
+    border-radius: 10px;
+    padding: 1px 7px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .btn-gallery .badge[hidden] { display: none; }
+
+  .toolbar {
+    background: #fff;
+    border-bottom: 1px solid rgba(45, 37, 32, 0.08);
+    padding: 10px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .tool-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: var(--dark);
+    transition: background 0.15s, color 0.15s;
+  }
+  .tool-btn.active {
+    background: var(--achiote);
+    color: #fff;
+  }
+  .tool-btn--action {
+    padding: 7px 10px;
+    font-weight: 500;
+    color: var(--mid);
+  }
+  .tool-btn--action:disabled {
+    color: rgba(45, 37, 32, 0.25);
+    cursor: default;
+  }
+  .tool-sep {
+    width: 1px;
+    height: 24px;
+    background: rgba(45, 37, 32, 0.1);
+    margin: 0 4px;
+  }
+  .toolbar__spacer { flex: 1; min-width: 8px; }
+
+  .size-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--mid);
+  }
+  .size-btn {
+    background: none;
+    border: 1px solid rgba(45, 37, 32, 0.12);
+    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--mid);
+    padding: 0;
+  }
+  .size-num {
+    font-weight: 600;
+    min-width: 18px;
+    text-align: center;
+  }
+  .size-x {
+    margin: 0 2px;
+    color: rgba(45, 37, 32, 0.3);
+  }
+
+  .canvas-area {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 12px;
+    overflow: hidden;
+  }
+  .canvas-wrap {
+    width: 100%;
+    max-width: 520px;
+    position: relative;
+  }
+  #grid-svg {
+    width: 100%;
+    height: auto;
+    touch-action: none;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 20px rgba(45, 37, 32, 0.08);
+    cursor: crosshair;
+    display: block;
+  }
+  .hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    text-align: center;
+    color: var(--mid);
+    opacity: 0.5;
+  }
+  .hint p {
+    font-size: 13px;
+    margin: 0;
+  }
+  .hint[hidden] { display: none; }
+
+  .bottom-actions {
+    padding: 12px 20px 24px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-secondary, .btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .btn-secondary {
+    border: 1.5px solid var(--dark);
+    background: transparent;
+    color: var(--dark);
+    font-weight: 600;
+    padding: 12px 20px;
+  }
+  .btn-primary {
+    border: none;
+    background: var(--achiote);
+    color: #fff;
+    font-weight: 700;
+    padding: 12px 24px;
+  }
+  .btn-secondary:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+  .btn-primary:disabled {
+    background: rgba(45, 37, 32, 0.12);
+    color: rgba(45, 37, 32, 0.3);
+    cursor: default;
+  }
+
+  /* ─── Preview ─── */
+  #preview-view { background: var(--dark); }
+  .preview-header {
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .btn-back {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--sacbe);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 0;
+  }
+  .preview-title {
+    flex: 1;
+    text-align: center;
+    color: var(--sacbe);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .preview-spacer { width: 80px; }
+  .preview-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden;
+  }
+  .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    max-width: 600px;
+    width: 100%;
+  }
+  .preview-grid > div { line-height: 0; }
+  .preview-grid svg { width: 100%; height: auto; display: block; }
+  .preview-foot {
+    padding: 16px 20px;
+    text-align: center;
+    color: var(--mid);
+    font-size: 13px;
+  }
+
+  /* ─── Gallery ─── */
+  #gallery-view { background: var(--sacbe); }
+  .gallery-header {
+    background: var(--dark);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .gallery-count {
+    color: var(--sacbe);
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gallery-intro {
+    padding: 28px 20px 12px;
+    text-align: center;
+  }
+  .gallery-intro h2 {
+    color: var(--dark);
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .gallery-intro p {
+    color: var(--mid);
+    font-size: 14px;
+    margin: 0;
+    line-height: 1.5;
+  }
+  .gallery-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+    padding: 16px 20px 40px;
+  }
+  .gallery-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  }
+  .gallery-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .gallery-card svg { width: 100%; height: auto; display: block; }
+  .gallery-card__email {
+    color: var(--mid);
+    font-size: 11px;
+    margin: 8px 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .gallery-card__date {
+    color: var(--mid);
+    font-size: 10px;
+    margin: 2px 0 0;
+    opacity: 0.6;
+  }
+  .gallery-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--mid);
+  }
+  .gallery-empty__icon {
+    margin-bottom: 16px;
+    opacity: 0.4;
+  }
+  .gallery-empty p { font-size: 15px; margin: 0 0 8px; }
+  .gallery-empty p.sub { font-size: 13px; opacity: 0.7; margin: 0; }
+  .gallery-loading {
+    text-align: center;
+    color: var(--mid);
+    padding: 40px;
+  }
+
+  /* ─── Success ─── */
+  #success-view {
+    align-items: center;
+    justify-content: center;
+    background: var(--sacbe);
+    padding: 24px;
+    text-align: center;
+  }
+  .success-check {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--achiote);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+    animation: pop 0.4s ease;
+  }
+  @keyframes pop {
+    0%   { transform: scale(0); }
+    70%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  #success-view h2 {
+    color: var(--dark);
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 8px;
+  }
+  #success-view p {
+    color: var(--mid);
+    font-size: 15px;
+    max-width: 300px;
+    line-height: 1.5;
+    margin: 0;
+  }
+  .success-mini { margin-top: 24px; }
+
+  /* ─── Modal ─── */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(45, 37, 32, 0.8);
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal[hidden] { display: none; }
+  .modal__box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 380px;
+    width: 100%;
+    position: relative;
+  }
+  .modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--mid);
+    padding: 4px;
+    line-height: 0;
+  }
+  .modal__preview {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .modal h3 {
+    color: var(--dark);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 6px;
+    text-align: center;
+  }
+  .modal__intro {
+    color: var(--mid);
+    font-size: 13px;
+    margin: 0 0 20px;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .modal__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 6px;
+  }
+  .modal__input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(45, 37, 32, 0.15);
+    font-size: 15px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .modal__input:focus { border-color: var(--achiote); }
+
+  .terms {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .terms__check {
+    width: 20px;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    border: 2px solid rgba(45, 37, 32, 0.2);
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    margin-top: 1px;
+  }
+  .terms__check.checked {
+    border-color: var(--achiote);
+    background: var(--achiote);
+  }
+  .terms__check .check-icon { display: none; }
+  .terms__check.checked .check-icon { display: block; }
+  .terms__text {
+    font-size: 12px;
+    color: var(--mid);
+    line-height: 1.45;
+  }
+  .terms__text a {
+    color: var(--achiote);
+    text-decoration: underline;
+    font-weight: 600;
+  }
+  .modal__submit {
+    width: 100%;
+    margin-top: 14px;
+    padding: 13px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--achiote);
+    color: #fff;
+    transition: background 0.2s;
+  }
+  .modal__submit:disabled {
+    background: rgba(45, 37, 32, 0.1);
+    color: rgba(45, 37, 32, 0.3);
+    cursor: default;
+  }
+  .modal__fineprint {
+    color: var(--mid);
+    font-size: 11px;
+    margin: 12px 0 0;
+    text-align: center;
+    line-height: 1.4;
+    opacity: 0.7;
+  }
+  .modal__preview svg { display: inline-block; }
+
+  /* Design detail modal */
+  .design-modal__box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+  }
+  .design-modal__main svg { display: inline-block; }
+  .design-modal__meta {
+    color: var(--mid);
+    font-size: 13px;
+    margin-top: 16px;
+  }
+  .design-modal__tiled {
+    margin-top: 16px;
+    padding: 12px;
+    background: var(--sacbe);
+    border-radius: 8px;
+  }
+  .design-modal__tiled-label {
+    color: var(--mid);
+    font-size: 11px;
+    margin: 0 0 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .design-modal__tiled-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+  }
+  .design-modal__tiled-grid > div { line-height: 0; }
+  .design-modal__tiled-grid svg { width: 100%; height: auto; display: block; }
+  .design-modal__close {
+    margin-top: 16px;
+    padding: 10px 24px;
+    background: var(--dark);
+    color: var(--sacbe);
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* Responsive */
+  @media (max-width: 479px) {
+    .tool-btn--action .label { display: none; }
+    .topbar { padding: 12px 16px; }
+    .topbar__title { font-size: 18px; }
+    .toolbar { padding: 8px 12px; }
+    .btn-gallery { padding: 7px 10px; font-size: 12px; }
+    .modal__box { padding: 22px; }
+    .canvas-area { padding: 16px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ──────────── EDITOR ──────────── -->
+<div id="editor-view" class="view">
+  <header class="topbar">
+    <div class="topbar__row">
+      <div>
+        <div class="topbar__brand-tag">
+          <span class="topbar__dot"></span>
+          <span class="topbar__brand">MUTEX</span>
+        </div>
+        <h1 class="topbar__title">Juguetico</h1>
+      </div>
+      <button id="btn-gallery" class="btn-gallery" type="button">
+        <span class="ic" id="icon-users-btn"></span>
+        <span>Galería</span>
+        <span id="gallery-badge" class="badge" hidden>0</span>
+      </button>
+    </div>
+    <p class="topbar__subtitle">Crea tu propio diseño textil inspirado en la tradición guatemalteca</p>
+  </header>
+
+  <div class="toolbar">
+    <button class="tool-btn active" data-tool="draw" type="button">
+      <span class="ic" id="icon-pencil"></span><span>Dibujar</span>
+    </button>
+    <button class="tool-btn" data-tool="erase" type="button">
+      <span class="ic" id="icon-eraser"></span><span>Borrar</span>
+    </button>
+    <div class="tool-sep"></div>
+    <button id="btn-clear" class="tool-btn tool-btn--action" type="button">
+      <span class="ic" id="icon-trash"></span><span class="label">Limpiar</span>
+    </button>
+    <button id="btn-mirrorH" class="tool-btn tool-btn--action" type="button">
+      <span class="ic" id="icon-flipH"></span><span class="label">Espejo ↔</span>
+    </button>
+    <button id="btn-mirrorV" class="tool-btn tool-btn--action" type="button">
+      <span class="ic" id="icon-flipV"></span><span class="label">Espejo ↕</span>
+    </button>
+    <button id="btn-undo" class="tool-btn tool-btn--action" type="button" disabled>
+      <span class="ic" id="icon-undo"></span><span class="label">Deshacer</span>
+    </button>
+    <div class="toolbar__spacer"></div>
+    <div class="size-controls">
+      <button id="size-cols-down" class="size-btn" type="button" aria-label="Reducir columnas">
+        <span class="ic" id="icon-chev-left"></span>
+      </button>
+      <span id="size-cols" class="size-num">10</span>
+      <button id="size-cols-up" class="size-btn" type="button" aria-label="Aumentar columnas">
+        <span class="ic" id="icon-chev-right"></span>
+      </button>
+      <span class="size-x">×</span>
+      <button id="size-rows-down" class="size-btn" type="button" aria-label="Reducir filas">
+        <span class="ic" id="icon-chev-down"></span>
+      </button>
+      <span id="size-rows" class="size-num">18</span>
+      <button id="size-rows-up" class="size-btn" type="button" aria-label="Aumentar filas">
+        <span class="ic" id="icon-chev-up"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="canvas-area">
+    <div class="canvas-wrap">
+      <svg id="grid-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div id="hint" class="hint">
+        <div class="ic" id="icon-hint-pencil" style="margin-bottom:8px;"></div>
+        <p>Dibuja sobre la grilla</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-actions">
+    <button id="btn-preview" class="btn-secondary" type="button" disabled>
+      <span class="ic" id="icon-eye"></span><span>Vista previa</span>
+    </button>
+    <button id="btn-save" class="btn-primary" type="button" disabled>
+      <span class="ic" id="icon-mail"></span><span>Guardar y enviar</span>
+    </button>
+  </div>
+</div>
+
+<!-- ──────────── PREVIEW ──────────── -->
+<div id="preview-view" class="view" hidden>
+  <div class="preview-header">
+    <button id="btn-back-preview" class="btn-back" type="button">
+      <span class="ic" id="icon-back-preview"></span><span>Volver</span>
+    </button>
+    <div class="preview-title">Vista previa — Patrón continuo</div>
+    <div class="preview-spacer"></div>
+  </div>
+  <div class="preview-body">
+    <div id="preview-tiles" class="preview-grid"></div>
+  </div>
+  <div class="preview-foot">Así se vería tu diseño como un textil continuo</div>
+</div>
+
+<!-- ──────────── GALLERY ──────────── -->
+<div id="gallery-view" class="view" hidden>
+  <div class="gallery-header">
+    <button id="btn-back-gallery" class="btn-back" type="button">
+      <span class="ic" id="icon-back-gallery"></span><span>Volver al editor</span>
+    </button>
+    <div class="toolbar__spacer"></div>
+    <div class="gallery-count">
+      <span class="ic" id="icon-users-header"></span>
+      <span><span id="gallery-count-num">0</span> diseños</span>
+    </div>
+  </div>
+  <div class="gallery-intro">
+    <h2>Galería colectiva</h2>
+    <p>Patrones creados por visitantes del museo</p>
+  </div>
+  <div id="gallery-list" class="gallery-list"></div>
+</div>
+
+<!-- ──────────── SUCCESS ──────────── -->
+<div id="success-view" class="view" hidden>
+  <div class="success-check">
+    <span class="ic" id="success-check-icon"></span>
+  </div>
+  <h2>¡Diseño guardado!</h2>
+  <p>Tu patrón textil ha sido registrado y pronto llegará a tu correo en formato PDF.</p>
+  <div id="success-mini" class="success-mini"></div>
+</div>
+
+<!-- ──────────── EMAIL MODAL ──────────── -->
+<div id="email-modal" class="modal" hidden>
+  <div class="modal__box" id="email-modal-box">
+    <button id="btn-modal-close" class="modal__close" type="button" aria-label="Cerrar">
+      <span class="ic" id="icon-modal-close"></span>
+    </button>
+    <div id="email-modal-preview" class="modal__preview"></div>
+    <h3>Recibe tu diseño en PDF</h3>
+    <p class="modal__intro">Ingresa tu correo electrónico y te enviaremos tu patrón textil en formato vectorial.</p>
+    <label class="modal__label" for="email-input">Correo electrónico</label>
+    <input id="email-input" class="modal__input" type="email" placeholder="tu@correo.com" autocomplete="email" inputmode="email">
+    <label id="terms-label" class="terms">
+      <span id="terms-check" class="terms__check">
+        <span class="ic check-icon" id="icon-terms-check"></span>
+      </span>
+      <span class="terms__text">
+        Para recibir tu diseño debes aceptar los
+        <a href="#" id="terms-link-1">Términos y condiciones</a> y la
+        <a href="#" id="terms-link-2">Política de privacidad</a>.
+      </span>
+    </label>
+    <button id="email-submit" class="modal__submit" type="button" disabled>Enviar a mi correo</button>
+    <p class="modal__fineprint">Tu diseño también se exhibirá en la galería colectiva del museo.</p>
+  </div>
+</div>
+
+<!-- ──────────── DESIGN DETAIL MODAL ──────────── -->
+<div id="design-modal" class="modal" hidden>
+  <div class="design-modal__box">
+    <div class="design-modal__main"></div>
+    <p class="design-modal__meta"></p>
+    <div class="design-modal__tiled">
+      <p class="design-modal__tiled-label">Vista como patrón continuo</p>
+      <div class="design-modal__tiled-grid"></div>
+    </div>
+    <button id="btn-design-close" class="design-modal__close" type="button">Cerrar</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ─── constants ─── */
+  var ACHIOTE = '#FF6927';
+  var SACBE   = '#E8E5D9';
+  var DARK    = '#2D2520';
+  var MID     = '#6B5E54';
+  var CS      = 18;
+  var STORAGE_PREFIX = 'jtk:';
+  var MAX_GALLERY = 60;
+  var MAX_HISTORY = 20;
+
+  /* ─── state ─── */
+  var state = {
+    view: 'editor',
+    rows: 18,
+    cols: 10,
+    grid: makeGrid(18, 10),
+    tool: 'draw',
+    isDrawing: false,
+    lastCell: null,
+    history: [],
+    email: '',
+    acceptTerms: false,
+    gallery: [],
+    selectedDesign: null,
+  };
+
+  /* ─── helpers ─── */
+  function makeGrid(r, c) {
+    var g = [];
+    for (var i = 0; i < r; i++) {
+      var row = [];
+      for (var j = 0; j < c; j++) row.push(0);
+      g.push(row);
+    }
+    return g;
+  }
+  function cellCenter(r, c) {
+    return {
+      cx: c * 2 * CS + CS + (r % 2 ? CS : 0),
+      cy: r * CS + CS,
+    };
+  }
+  function diamondPts(cx, cy) {
+    return cx + ',' + (cy - CS) + ' ' + (cx + CS) + ',' + cy + ' ' + cx + ',' + (cy + CS) + ' ' + (cx - CS) + ',' + cy;
+  }
+  function hitTest(mx, my, rows, cols) {
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var cc = cellCenter(r, c);
+        if (Math.abs(mx - cc.cx) / CS + Math.abs(my - cc.cy) / CS <= 1) return { r: r, c: c };
+      }
+    }
+    return null;
+  }
+  function svgDims(rows, cols) {
+    return { w: (2 * cols + 2) * CS, h: (rows + 2) * CS };
+  }
+  function maskEmail(e) {
+    if (!e) return '';
+    var at = e.indexOf('@');
+    if (at < 0) return e;
+    return e.slice(0, Math.min(2, at)) + '••••@' + e.slice(at + 1);
+  }
+  function hasContent() {
+    for (var r = 0; r < state.grid.length; r++)
+      for (var c = 0; c < state.grid[r].length; c++)
+        if (state.grid[r][c]) return true;
+    return false;
+  }
+  function fmtDate(ts) {
+    try { return new Date(ts).toLocaleDateString('es-GT'); }
+    catch (_) { return ''; }
+  }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (m) {
+      return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m];
+    });
+  }
+
+  /* ─── icons (lucide-style) ─── */
+  var ICON_PATHS = {
+    pencil:     '<path d="M17 3a2.85 2.85 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>',
+    eraser:     '<path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/>',
+    trash:      '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
+    flipH:      '<path d="M8 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h3"/><path d="M16 3h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-3"/><path d="M12 20v2"/><path d="M12 14v2"/><path d="M12 8v2"/><path d="M12 2v2"/>',
+    flipV:      '<path d="M21 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v3"/><path d="M21 16v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3"/><path d="M4 12H2"/><path d="M10 12H8"/><path d="M16 12h-2"/><path d="M22 12h-2"/>',
+    undo:       '<path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/>',
+    eye:        '<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+    users:      '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    mail:       '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 5L2 7"/>',
+    x:          '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
+    chevUp:     '<path d="m18 15-6-6-6 6"/>',
+    chevDown:   '<path d="m6 9 6 6 6-6"/>',
+    chevLeft:   '<path d="m15 18-6-6 6-6"/>',
+    chevRight:  '<path d="m9 18 6-6-6-6"/>',
+    check:      '<path d="M20 6 9 17l-5-5"/>',
+    arrowLeft:  '<path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>',
+  };
+  function icon(name, size, color, sw) {
+    if (size == null) size = 16;
+    if (color == null) color = 'currentColor';
+    if (sw == null) sw = 2;
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="' + color + '" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICON_PATHS[name] + '</svg>';
+  }
+
+  /* ─── mini-grid SVG (for thumbnails / previews) ─── */
+  function miniGridSVG(grid, size) {
+    if (!grid || !grid.length) return '';
+    if (size == null) size = 80;
+    var rows = grid.length, cols = grid[0].length;
+    var s = 4;
+    var w = (2 * cols + 2) * s;
+    var h = (rows + 2) * s;
+    var polys = '';
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var cx = c * 2 * s + s + (r % 2 ? s : 0);
+        var cy = r * s + s;
+        var fill = grid[r][c] ? ACHIOTE : SACBE;
+        polys += '<polygon points="' + cx + ',' + (cy - s) + ' ' + (cx + s) + ',' + cy + ' ' + cx + ',' + (cy + s) + ' ' + (cx - s) + ',' + cy + '" fill="' + fill + '" stroke="' + DARK + '" stroke-width="0.3" stroke-opacity="0.15"/>';
+      }
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" width="' + size + '" height="' + (size * h / w) + '" style="background:' + SACBE + ';border-radius:6px;">' + polys + '</svg>';
+  }
+
+  /* ─── history ─── */
+  function pushHistory() {
+    var snap = [];
+    for (var r = 0; r < state.grid.length; r++) snap.push(state.grid[r].slice());
+    state.history.push(snap);
+    if (state.history.length > MAX_HISTORY + 1) state.history.shift();
+    refreshUndoBtn();
+  }
+  function refreshUndoBtn() {
+    document.getElementById('btn-undo').disabled = state.history.length === 0;
+  }
+
+  /* ─── tools ─── */
+  function setTool(t) {
+    state.tool = t;
+    var btns = document.querySelectorAll('.tool-btn[data-tool]');
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle('active', btns[i].dataset.tool === t);
+    }
+    document.getElementById('grid-svg').style.cursor = t === 'draw' ? 'crosshair' : 'pointer';
+  }
+  function clearGrid() {
+    pushHistory();
+    state.grid = makeGrid(state.rows, state.cols);
+    renderGrid();
+    updateBottom();
+  }
+  function mirrorH() {
+    pushHistory();
+    state.grid = state.grid.map(function (row) {
+      var half = Math.ceil(row.length / 2);
+      return row.map(function (v, c) { return c < half ? v : row[row.length - 1 - c]; });
+    });
+    renderGrid();
+    updateBottom();
+  }
+  function mirrorV() {
+    pushHistory();
+    var g = state.grid;
+    var half = Math.ceil(g.length / 2);
+    state.grid = g.map(function (row, r) {
+      return r < half ? row.slice() : g[g.length - 1 - r].slice();
+    });
+    renderGrid();
+    updateBottom();
+  }
+  function undo() {
+    if (state.history.length === 0) return;
+    var prev = state.history.pop();
+    state.grid = prev;
+    if (prev.length !== state.rows) state.rows = prev.length;
+    if ((prev[0] && prev[0].length) !== state.cols) state.cols = prev[0] ? prev[0].length : state.cols;
+    document.getElementById('size-rows').textContent = state.rows;
+    document.getElementById('size-cols').textContent = state.cols;
+    renderGrid();
+    refreshUndoBtn();
+    updateBottom();
+  }
+  function resizeGrid(newR, newC) {
+    var nr = Math.max(4, Math.min(24, newR));
+    var nc = Math.max(4, Math.min(24, newC));
+    if (nr === state.rows && nc === state.cols) return;
+    pushHistory();
+    var ng = makeGrid(nr, nc);
+    for (var r = 0; r < Math.min(nr, state.rows); r++)
+      for (var c = 0; c < Math.min(nc, state.cols); c++)
+        ng[r][c] = (state.grid[r] && state.grid[r][c]) || 0;
+    state.rows = nr;
+    state.cols = nc;
+    state.grid = ng;
+    document.getElementById('size-rows').textContent = nr;
+    document.getElementById('size-cols').textContent = nc;
+    renderGrid();
+  }
+  function applyTool(r, c) {
+    var prev = state.grid[r][c];
+    if (state.tool === 'draw')  state.grid[r][c] = 1;
+    else if (state.tool === 'erase') state.grid[r][c] = 0;
+    if (prev !== state.grid[r][c]) {
+      updateCell(r, c);
+      updateBottom();
+    }
+  }
+  function updateCell(r, c) {
+    var el = document.querySelector('#grid-svg polygon[data-r="' + r + '"][data-c="' + c + '"]');
+    if (el) el.setAttribute('fill', state.grid[r][c] ? ACHIOTE : SACBE);
+  }
+
+  /* ─── pointer ─── */
+  function getSVGCoord(e) {
+    var svg = document.getElementById('grid-svg');
+    var rect = svg.getBoundingClientRect();
+    var d = svgDims(state.rows, state.cols);
+    return {
+      x: ((e.clientX - rect.left) / rect.width) * d.w,
+      y: ((e.clientY - rect.top) / rect.height) * d.h,
+    };
+  }
+  function onPointerDown(e) {
+    e.preventDefault();
+    if (e.pointerId != null && e.target.setPointerCapture) {
+      try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+    pushHistory();
+    state.isDrawing = true;
+    var pt = getSVGCoord(e);
+    var hit = hitTest(pt.x, pt.y, state.rows, state.cols);
+    if (hit) {
+      applyTool(hit.r, hit.c);
+      state.lastCell = hit;
+    }
+  }
+  function onPointerMove(e) {
+    if (!state.isDrawing) return;
+    e.preventDefault();
+    var pt = getSVGCoord(e);
+    var hit = hitTest(pt.x, pt.y, state.rows, state.cols);
+    if (hit && (!state.lastCell || hit.r !== state.lastCell.r || hit.c !== state.lastCell.c)) {
+      applyTool(hit.r, hit.c);
+      state.lastCell = hit;
+    }
+  }
+  function onPointerUp() {
+    state.isDrawing = false;
+    state.lastCell = null;
+  }
+
+  /* ─── views ─── */
+  function setView(v) {
+    state.view = v;
+    document.getElementById('editor-view').hidden  = v !== 'editor';
+    document.getElementById('preview-view').hidden = v !== 'preview';
+    document.getElementById('gallery-view').hidden = v !== 'gallery';
+    document.getElementById('success-view').hidden = v !== 'success';
+    if (v === 'preview') renderPreview();
+    if (v === 'gallery') renderGallery();
+    if (v === 'success') renderSuccess();
+    window.scrollTo(0, 0);
+  }
+
+  /* ─── render: editor grid ─── */
+  function renderGrid() {
+    var svg = document.getElementById('grid-svg');
+    var d = svgDims(state.rows, state.cols);
+    svg.setAttribute('viewBox', '0 0 ' + d.w + ' ' + d.h);
+    var html = '';
+    for (var r = 0; r < state.rows; r++) {
+      for (var c = 0; c < state.cols; c++) {
+        var cc = cellCenter(r, c);
+        var fill = state.grid[r][c] ? ACHIOTE : SACBE;
+        html += '<polygon data-r="' + r + '" data-c="' + c + '" points="' + diamondPts(cc.cx, cc.cy) + '" fill="' + fill + '" stroke="' + DARK + '" stroke-width="0.5" stroke-opacity="0.12"/>';
+      }
+    }
+    svg.innerHTML = html;
+  }
+
+  function updateBottom() {
+    var has = hasContent();
+    document.getElementById('btn-preview').disabled = !has;
+    document.getElementById('btn-save').disabled = !has;
+    document.getElementById('hint').hidden = has;
+  }
+
+  function refreshGalleryBadge() {
+    var b = document.getElementById('gallery-badge');
+    b.textContent = state.gallery.length;
+    b.hidden = state.gallery.length === 0;
+  }
+
+  /* ─── render: preview ─── */
+  function renderPreview() {
+    var tile = miniGridSVG(state.grid, 140);
+    var html = '';
+    for (var i = 0; i < 16; i++) html += '<div>' + tile + '</div>';
+    document.getElementById('preview-tiles').innerHTML = html;
+  }
+
+  /* ─── render: gallery ─── */
+  function renderGallery() {
+    document.getElementById('gallery-count-num').textContent = state.gallery.length;
+    var listEl = document.getElementById('gallery-list');
+    if (!state.gallery.length) {
+      listEl.classList.remove('gallery-list');
+      listEl.innerHTML =
+        '<div class="gallery-empty">' +
+          '<div class="gallery-empty__icon">' + icon('users', 48, MID, 1) + '</div>' +
+          '<p>La galería está vacía</p>' +
+          '<p class="sub">¡Sé el primero en crear un diseño!</p>' +
+        '</div>';
+      return;
+    }
+    listEl.classList.add('gallery-list');
+    var html = '';
+    for (var i = 0; i < state.gallery.length; i++) {
+      var d = state.gallery[i];
+      html +=
+        '<div class="gallery-card" data-idx="' + i + '">' +
+          miniGridSVG(d.grid, 120) +
+          '<p class="gallery-card__email">' + escapeHtml(maskEmail(d.email)) + '</p>' +
+          '<p class="gallery-card__date">' + escapeHtml(fmtDate(d.ts)) + '</p>' +
+        '</div>';
+    }
+    listEl.innerHTML = html;
+    var cards = listEl.querySelectorAll('.gallery-card');
+    for (var k = 0; k < cards.length; k++) {
+      (function (card) {
+        card.addEventListener('click', function () {
+          var idx = parseInt(card.dataset.idx, 10);
+          showDesignDetail(state.gallery[idx]);
+        });
+      })(cards[k]);
+    }
+  }
+
+  /* ─── design detail modal ─── */
+  function showDesignDetail(d) {
+    state.selectedDesign = d;
+    var modal = document.getElementById('design-modal');
+    modal.querySelector('.design-modal__main').innerHTML = miniGridSVG(d.grid, 240);
+    modal.querySelector('.design-modal__meta').textContent =
+      maskEmail(d.email) + ' · ' + fmtDate(d.ts);
+    var tileHtml = '';
+    var mini = miniGridSVG(d.grid, 70);
+    for (var i = 0; i < 9; i++) tileHtml += '<div>' + mini + '</div>';
+    modal.querySelector('.design-modal__tiled-grid').innerHTML = tileHtml;
+    modal.hidden = false;
+  }
+  function closeDesignDetail() {
+    document.getElementById('design-modal').hidden = true;
+    state.selectedDesign = null;
+  }
+
+  /* ─── render: success ─── */
+  function renderSuccess() {
+    document.getElementById('success-mini').innerHTML = miniGridSVG(state.grid, 140);
+  }
+
+  /* ─── save / load gallery (localStorage) ─── */
+  function loadGallery() {
+    var designs = [];
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.indexOf(STORAGE_PREFIX) === 0) {
+          try {
+            var raw = localStorage.getItem(key);
+            if (raw) designs.push(JSON.parse(raw));
+          } catch (_) {}
+        }
+      }
+    } catch (_) {}
+    designs.sort(function (a, b) { return b.ts - a.ts; });
+    state.gallery = designs.slice(0, MAX_GALLERY);
+    refreshGalleryBadge();
+  }
+
+  function saveDesign() {
+    if (!state.email || state.email.indexOf('@') < 0 || !state.acceptTerms) return;
+    var design = {
+      grid: state.grid.map(function (r) { return r.slice(); }),
+      rows: state.rows,
+      cols: state.cols,
+      email: state.email,
+      ts: Date.now(),
+    };
+    try {
+      localStorage.setItem(STORAGE_PREFIX + design.ts, JSON.stringify(design));
+    } catch (_) {}
+    state.gallery.unshift(design);
+    if (state.gallery.length > MAX_GALLERY) state.gallery.length = MAX_GALLERY;
+    refreshGalleryBadge();
+    closeEmailModal();
+    setView('success');
+    setTimeout(function () {
+      if (state.view === 'success') setView('editor');
+    }, 3500);
+  }
+
+  /* ─── email modal ─── */
+  function openEmailModal() {
+    if (!hasContent()) return;
+    document.getElementById('email-modal-preview').innerHTML = miniGridSVG(state.grid, 120);
+    document.getElementById('email-modal').hidden = false;
+    updateEmailSubmit();
+    setTimeout(function () { document.getElementById('email-input').focus(); }, 50);
+  }
+  function closeEmailModal() {
+    document.getElementById('email-modal').hidden = true;
+    state.email = '';
+    state.acceptTerms = false;
+    document.getElementById('email-input').value = '';
+    document.getElementById('terms-check').classList.remove('checked');
+    updateEmailSubmit();
+  }
+  function updateEmailSubmit() {
+    var ok = state.email && state.email.indexOf('@') >= 0 && state.acceptTerms;
+    document.getElementById('email-submit').disabled = !ok;
+  }
+  function toggleTerms() {
+    state.acceptTerms = !state.acceptTerms;
+    document.getElementById('terms-check').classList.toggle('checked', state.acceptTerms);
+    updateEmailSubmit();
+  }
+
+  /* ─── init ─── */
+  function fillIcon(id, name, size, color, sw) {
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = icon(name, size, color, sw);
+  }
+  function init() {
+    fillIcon('icon-pencil', 'pencil', 15);
+    fillIcon('icon-eraser', 'eraser', 15);
+    fillIcon('icon-trash', 'trash', 14);
+    fillIcon('icon-flipH', 'flipH', 14);
+    fillIcon('icon-flipV', 'flipV', 14);
+    fillIcon('icon-undo', 'undo', 14);
+    fillIcon('icon-eye', 'eye', 17);
+    fillIcon('icon-mail', 'mail', 17);
+    fillIcon('icon-users-btn', 'users', 15);
+    fillIcon('icon-users-header', 'users', 18, ACHIOTE);
+    fillIcon('icon-chev-up', 'chevUp', 12);
+    fillIcon('icon-chev-down', 'chevDown', 12);
+    fillIcon('icon-chev-left', 'chevLeft', 12);
+    fillIcon('icon-chev-right', 'chevRight', 12);
+    fillIcon('icon-back-preview', 'arrowLeft', 18);
+    fillIcon('icon-back-gallery', 'arrowLeft', 18);
+    fillIcon('icon-modal-close', 'x', 20);
+    fillIcon('icon-hint-pencil', 'pencil', 28);
+    fillIcon('success-check-icon', 'check', 40, '#fff', 3);
+    fillIcon('icon-terms-check', 'check', 13, '#fff', 3);
+
+    // Tool buttons
+    var toolBtns = document.querySelectorAll('.tool-btn[data-tool]');
+    for (var i = 0; i < toolBtns.length; i++) {
+      (function (b) {
+        b.addEventListener('click', function () { setTool(b.dataset.tool); });
+      })(toolBtns[i]);
+    }
+    document.getElementById('btn-clear').addEventListener('click', clearGrid);
+    document.getElementById('btn-mirrorH').addEventListener('click', mirrorH);
+    document.getElementById('btn-mirrorV').addEventListener('click', mirrorV);
+    document.getElementById('btn-undo').addEventListener('click', undo);
+
+    document.getElementById('size-rows-up').addEventListener('click', function () { resizeGrid(state.rows + 1, state.cols); });
+    document.getElementById('size-rows-down').addEventListener('click', function () { resizeGrid(state.rows - 1, state.cols); });
+    document.getElementById('size-cols-up').addEventListener('click', function () { resizeGrid(state.rows, state.cols + 1); });
+    document.getElementById('size-cols-down').addEventListener('click', function () { resizeGrid(state.rows, state.cols - 1); });
+
+    document.getElementById('btn-gallery').addEventListener('click', function () { setView('gallery'); });
+    document.getElementById('btn-back-gallery').addEventListener('click', function () { setView('editor'); });
+    document.getElementById('btn-back-preview').addEventListener('click', function () { setView('editor'); });
+
+    document.getElementById('btn-preview').addEventListener('click', function () {
+      if (hasContent()) setView('preview');
+    });
+    document.getElementById('btn-save').addEventListener('click', openEmailModal);
+
+    // Email modal interactions
+    document.getElementById('email-modal').addEventListener('click', function (e) {
+      if (e.target.id === 'email-modal') closeEmailModal();
+    });
+    document.getElementById('btn-modal-close').addEventListener('click', closeEmailModal);
+
+    var emailInput = document.getElementById('email-input');
+    emailInput.addEventListener('input', function (e) {
+      state.email = e.target.value;
+      updateEmailSubmit();
+    });
+    emailInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') saveDesign();
+    });
+    document.getElementById('email-submit').addEventListener('click', saveDesign);
+
+    document.getElementById('terms-label').addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') return;          // links handled separately
+      if (e.target.tagName === 'INPUT') return;
+      e.preventDefault();
+      toggleTerms();
+    });
+    document.getElementById('terms-link-1').addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); });
+    document.getElementById('terms-link-2').addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); });
+
+    // Design detail modal
+    document.getElementById('design-modal').addEventListener('click', function (e) {
+      if (e.target.id === 'design-modal') closeDesignDetail();
+    });
+    document.getElementById('btn-design-close').addEventListener('click', closeDesignDetail);
+
+    // SVG pointer
+    var svg = document.getElementById('grid-svg');
+    svg.addEventListener('pointerdown', onPointerDown);
+    svg.addEventListener('pointermove', onPointerMove);
+    svg.addEventListener('pointerup', onPointerUp);
+    svg.addEventListener('pointercancel', onPointerUp);
+    window.addEventListener('pointerup', onPointerUp);
+
+    // Keyboard escape closes modals / leaves overlays
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (!document.getElementById('design-modal').hidden) { closeDesignDetail(); return; }
+        if (!document.getElementById('email-modal').hidden) { closeEmailModal(); return; }
+        if (state.view === 'preview' || state.view === 'gallery') setView('editor');
+      }
+    });
+
+    // Initial paint
+    renderGrid();
+    updateBottom();
+    refreshUndoBtn();
+    loadGallery();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
