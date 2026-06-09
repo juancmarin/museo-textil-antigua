@@ -39,8 +39,8 @@ async function buildPdf(grid, rows, cols, emailMasked) {
   const availH  = topY - botY;
   const margin  = 50;
   const availW  = W - 2 * margin;
-  const svgW    = (2 * cols + 2) * CS;
-  const svgH    = (rows + 2) * CS;
+  const svgW    = (2 * cols + 1) * CS;
+  const svgH    = (rows + 1) * CS;
   const scale   = Math.min(availW / svgW, availH / svgH);
   const drawW   = svgW * scale;
   const drawH   = svgH * scale;

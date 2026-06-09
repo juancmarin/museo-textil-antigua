@@ -196,9 +196,6 @@
     width: 100%;
     height: auto;
     touch-action: none;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 20px rgba(45, 37, 32, 0.08);
     cursor: crosshair;
     display: block;
   }
@@ -862,7 +859,7 @@
     return null;
   }
   function svgDims(rows, cols) {
-    return { w: (2 * cols + 2) * CS, h: (rows + 2) * CS };
+    return { w: (2 * cols + 1) * CS, h: (rows + 1) * CS };
   }
   function hasContent() {
     for (var r = 0; r < state.grid.length; r++)
@@ -912,8 +909,8 @@
     if (size == null) size = 80;
     var rows = grid.length, cols = grid[0].length;
     var s = 4;
-    var w = (2 * cols + 2) * s;
-    var h = (rows + 2) * s;
+    var w = (2 * cols + 1) * s;
+    var h = (rows + 1) * s;
     var polys = '';
     for (var r = 0; r < rows; r++) {
       for (var c = 0; c < cols; c++) {
