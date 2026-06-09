@@ -34,7 +34,11 @@ create policy "anon read designs"
   to anon
   using (true);
 
--- Los inserts los hace la Vercel Function con la SERVICE_ROLE key
--- (service_role salta RLS por diseño de Supabase). No hace falta policy de INSERT.
+-- Los inserts y reads desde la Vercel Function usan SERVICE_ROLE.
+-- Cuando "Automatically expose new tables" está desactivado al crear el proyecto
+-- (recomendado), service_role NO obtiene grants por defecto en tablas nuevas.
+-- Estos grants son necesarios para que la Function pueda escribir y leer.
+grant all on public.designs to service_role;
+grant usage, select on sequence public.designs_id_seq to service_role;
 
 -- ─── Listo. Verificá con: select * from public.designs limit 1; ───
