@@ -563,6 +563,17 @@
     line-height: 1.4;
     opacity: 0.7;
   }
+  .modal__error {
+    color: #c0341d;
+    background: rgba(192, 52, 29, 0.08);
+    border: 1px solid rgba(192, 52, 29, 0.18);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    margin: 12px 0 0;
+    text-align: center;
+    line-height: 1.4;
+  }
   .modal__preview svg { display: inline-block; }
 
   /* Design detail modal */
@@ -773,6 +784,7 @@
       </span>
     </label>
     <button id="email-submit" class="modal__submit" type="button" disabled>Enviar a mi correo</button>
+    <p id="email-error" class="modal__error" hidden></p>
     <p class="modal__fineprint">Tu diseño también se exhibirá en la galería colectiva del museo.</p>
   </div>
 </div>
@@ -800,9 +812,10 @@
   var DARK    = '#2D2520';
   var MID     = '#6B5E54';
   var CS      = 18;
-  var STORAGE_PREFIX = 'jtk:';
   var MAX_GALLERY = 60;
   var MAX_HISTORY = 20;
+  var API_GUARDAR = '/api/guardar';
+  var API_GALERIA = '/api/galeria';
 
   /* ─── state ─── */
   var state = {
@@ -850,12 +863,6 @@
   }
   function svgDims(rows, cols) {
     return { w: (2 * cols + 2) * CS, h: (rows + 2) * CS };
-  }
-  function maskEmail(e) {
-    if (!e) return '';
-    var at = e.indexOf('@');
-    if (at < 0) return e;
-    return e.slice(0, Math.min(2, at)) + '••••@' + e.slice(at + 1);
   }
   function hasContent() {
     for (var r = 0; r < state.grid.length; r++)
@@ -1117,8 +1124,8 @@
       html +=
         '<div class="gallery-card" data-idx="' + i + '">' +
           miniGridSVG(d.grid, 120) +
-          '<p class="gallery-card__email">' + escapeHtml(maskEmail(d.email)) + '</p>' +
-          '<p class="gallery-card__date">' + escapeHtml(fmtDate(d.ts)) + '</p>' +
+          '<p class="gallery-card__email">' + escapeHtml(d.email_masked || '') + '</p>' +
+          '<p class="gallery-card__date">' + escapeHtml(fmtDate(d.created_at)) + '</p>' +
         '</div>';
     }
     listEl.innerHTML = html;
@@ -1139,7 +1146,7 @@
     var modal = document.getElementById('design-modal');
     modal.querySelector('.design-modal__main').innerHTML = miniGridSVG(d.grid, 240);
     modal.querySelector('.design-modal__meta').textContent =
-      maskEmail(d.email) + ' · ' + fmtDate(d.ts);
+      (d.email_masked || '') + ' · ' + fmtDate(d.created_at);
     var tileHtml = '';
     var mini = miniGridSVG(d.grid, 70);
     for (var i = 0; i < 9; i++) tileHtml += '<div>' + mini + '</div>';
@@ -1156,45 +1163,78 @@
     document.getElementById('success-mini').innerHTML = miniGridSVG(state.grid, 140);
   }
 
-  /* ─── save / load gallery (localStorage) ─── */
+  /* ─── load gallery from backend ─── */
   function loadGallery() {
-    var designs = [];
-    try {
-      for (var i = 0; i < localStorage.length; i++) {
-        var key = localStorage.key(i);
-        if (key && key.indexOf(STORAGE_PREFIX) === 0) {
-          try {
-            var raw = localStorage.getItem(key);
-            if (raw) designs.push(JSON.parse(raw));
-          } catch (_) {}
-        }
-      }
-    } catch (_) {}
-    designs.sort(function (a, b) { return b.ts - a.ts; });
-    state.gallery = designs.slice(0, MAX_GALLERY);
-    refreshGalleryBadge();
+    fetch(API_GALERIA, { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : { designs: [] }; })
+      .then(function (data) {
+        state.gallery = (data.designs || []).slice(0, MAX_GALLERY);
+        refreshGalleryBadge();
+        if (state.view === 'gallery') renderGallery();
+      })
+      .catch(function () {
+        state.gallery = [];
+        refreshGalleryBadge();
+      });
+  }
+
+  /* ─── save design via backend (DB + PDF email) ─── */
+  function setSaveError(msg) {
+    var el = document.getElementById('email-error');
+    if (!el) return;
+    if (msg) { el.textContent = msg; el.hidden = false; }
+    else     { el.textContent = '';  el.hidden = true; }
   }
 
   function saveDesign() {
     if (!state.email || state.email.indexOf('@') < 0 || !state.acceptTerms) return;
-    var design = {
-      grid: state.grid.map(function (r) { return r.slice(); }),
-      rows: state.rows,
-      cols: state.cols,
-      email: state.email,
-      ts: Date.now(),
-    };
-    try {
-      localStorage.setItem(STORAGE_PREFIX + design.ts, JSON.stringify(design));
-    } catch (_) {}
-    state.gallery.unshift(design);
-    if (state.gallery.length > MAX_GALLERY) state.gallery.length = MAX_GALLERY;
-    refreshGalleryBadge();
-    closeEmailModal();
-    setView('success');
-    setTimeout(function () {
-      if (state.view === 'success') setView('editor');
-    }, 3500);
+    var btn = document.getElementById('email-submit');
+    var originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+    setSaveError('');
+
+    fetch(API_GUARDAR, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        grid: state.grid,
+        email: state.email,
+      }),
+    })
+      .then(function (r) {
+        return r.json().then(function (body) { return { ok: r.ok, body: body, status: r.status }; });
+      })
+      .then(function (res) {
+        if (!res.ok || !res.body || !res.body.ok) {
+          throw new Error((res.body && res.body.error) || 'network');
+        }
+        var design = res.body.design;
+        if (design) {
+          state.gallery.unshift(design);
+          if (state.gallery.length > MAX_GALLERY) state.gallery.length = MAX_GALLERY;
+          refreshGalleryBadge();
+        }
+        // Adjust success message if email wasn't sent (e.g. Resend in sandbox)
+        var successP = document.querySelector('#success-view p');
+        if (successP) {
+          successP.textContent = res.body.emailSent
+            ? 'Tu patrón textil ha sido registrado y pronto llegará a tu correo en formato PDF.'
+            : 'Tu patrón textil quedó guardado en la galería colectiva del museo.';
+        }
+        closeEmailModal();
+        setView('success');
+        setTimeout(function () {
+          if (state.view === 'success') setView('editor');
+        }, 3500);
+      })
+      .catch(function (err) {
+        btn.disabled = false;
+        btn.textContent = originalText;
+        setSaveError('No pudimos guardar tu diseño. Probá de nuevo en un momento.');
+        // eslint-disable-next-line no-console
+        console.error('saveDesign failed:', err);
+      });
   }
 
   /* ─── email modal ─── */
@@ -1211,6 +1251,10 @@
     state.acceptTerms = false;
     document.getElementById('email-input').value = '';
     document.getElementById('terms-check').classList.remove('checked');
+    var btn = document.getElementById('email-submit');
+    btn.textContent = 'Enviar a mi correo';
+    btn.disabled = true;
+    setSaveError('');
     updateEmailSubmit();
   }
   function updateEmailSubmit() {

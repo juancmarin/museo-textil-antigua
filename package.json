@@ -1,0 +1,15 @@
+{
+  "name": "mutex-juguetico-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Vercel Functions for the MUTEX Juguetico — save designs + email PDF",
+  "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "pdf-lib": "^1.17.1",
+    "resend": "^4.0.0"
+  }
+}
