@@ -291,13 +291,9 @@
     overflow: hidden;
   }
   .preview-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
     max-width: 600px;
     width: 100%;
   }
-  .preview-grid > div { line-height: 0; }
   .preview-grid svg { width: 100%; height: auto; display: block; }
   .preview-foot {
     padding: 16px 20px;
@@ -603,11 +599,8 @@
     letter-spacing: 0.05em;
   }
   .design-modal__tiled-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0;
+    width: 100%;
   }
-  .design-modal__tiled-grid > div { line-height: 0; }
   .design-modal__tiled-grid svg { width: 100%; height: auto; display: block; }
   .design-modal__close {
     margin-top: 16px;
@@ -923,6 +916,30 @@
     return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" width="' + size + '" height="' + (size * h / w) + '" style="background:' + SACBE + ';">' + polys + '</svg>';
   }
 
+  /* ─── Continuous tiled pattern SVG (one big SVG, no seams) ─── */
+  function tiledPatternSVG(grid, tilesX, tilesY) {
+    if (!grid || !grid.length) return '';
+    var rows = grid.length;
+    var cols = grid[0].length;
+    var s = 4;
+    var totalRows = rows * tilesY;
+    var totalCols = cols * tilesX;
+    var w = (2 * totalCols + 1) * s;
+    var h = (totalRows + 1) * s;
+    var polys = '';
+    for (var R = 0; R < totalRows; R++) {
+      var r = R % rows;
+      for (var C = 0; C < totalCols; C++) {
+        var c = C % cols;
+        var cx = C * 2 * s + s + (R % 2 ? s : 0);
+        var cy = R * s + s;
+        var fill = grid[r][c] ? ACHIOTE : SACBE;
+        polys += '<polygon points="' + cx + ',' + (cy - s) + ' ' + (cx + s) + ',' + cy + ' ' + cx + ',' + (cy + s) + ' ' + (cx - s) + ',' + cy + '" fill="' + fill + '" stroke="' + DARK + '" stroke-width="0.3" stroke-opacity="0.15"/>';
+      }
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" style="background:' + SACBE + ';width:100%;height:auto;display:block;">' + polys + '</svg>';
+  }
+
   /* ─── history ─── */
   function pushHistory() {
     var snap = [];
@@ -1094,10 +1111,7 @@
 
   /* ─── render: preview ─── */
   function renderPreview() {
-    var tile = miniGridSVG(state.grid, 140);
-    var html = '';
-    for (var i = 0; i < 16; i++) html += '<div>' + tile + '</div>';
-    document.getElementById('preview-tiles').innerHTML = html;
+    document.getElementById('preview-tiles').innerHTML = tiledPatternSVG(state.grid, 4, 4);
   }
 
   /* ─── render: gallery ─── */
@@ -1144,10 +1158,7 @@
     modal.querySelector('.design-modal__main').innerHTML = miniGridSVG(d.grid, 240);
     modal.querySelector('.design-modal__meta').textContent =
       (d.email_masked || '') + ' · ' + fmtDate(d.created_at);
-    var tileHtml = '';
-    var mini = miniGridSVG(d.grid, 70);
-    for (var i = 0; i < 9; i++) tileHtml += '<div>' + mini + '</div>';
-    modal.querySelector('.design-modal__tiled-grid').innerHTML = tileHtml;
+    modal.querySelector('.design-modal__tiled-grid').innerHTML = tiledPatternSVG(d.grid, 3, 3);
     modal.hidden = false;
   }
   function closeDesignDetail() {
