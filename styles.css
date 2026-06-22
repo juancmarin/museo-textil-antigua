@@ -922,10 +922,16 @@ a {
 
 /* =========================================================================
    HERO ENTRANCE ANIMATION (home page only)
+   Curves and stagger inspired by Framer Motion's "smooth" presets.
    ========================================================================= */
-@keyframes hero-fade-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: none; }
+@keyframes hero-rise {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes hero-reveal {
+  from { opacity: 0; transform: scale(0.985) translate3d(0, 12px, 0); filter: blur(6px); }
+  to   { opacity: 1; transform: scale(1) translate3d(0, 0, 0); filter: blur(0); }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -935,11 +941,34 @@ a {
   .hero .footer,
   .hero .visual {
     opacity: 0;
-    animation: hero-fade-in 0.7s ease-out forwards;
+    will-change: opacity, transform;
+    animation-fill-mode: forwards;
+    /* out-quint — feels like Framer's "easeOut" but a touch crisper. */
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
+
   .hero .brand,
-  .hero .headline { animation-delay: 0.1s; }
+  .hero .headline {
+    animation-name: hero-rise;
+    animation-duration: 0.9s;
+  }
+  .hero .brand    { animation-delay: 0.15s; }
+  .hero .headline { animation-delay: 0.30s; }
+
   .hero .nav,
-  .hero .footer  { animation-delay: 0.8s; }
-  .hero .visual  { animation-delay: 1.5s; }
+  .hero .footer {
+    animation-name: hero-rise;
+    animation-duration: 0.8s;
+  }
+  .hero .nav    { animation-delay: 1.05s; }
+  .hero .footer { animation-delay: 1.20s; }
+
+  .hero .visual {
+    animation-name: hero-reveal;
+    animation-duration: 1.6s;
+    animation-delay: 2.10s;
+    /* out-expo — long, soft settle for the hero artwork. */
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform, filter;
+  }
 }
