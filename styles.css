@@ -89,7 +89,7 @@
 
 :root {
   /* Paleta extraída del diseño de Figma */
-  --cream: #e8e5d9;
+  --cream: #efe6de;
   --cream-light: #f1eee4;
   --black: #000000;
   --orange: #ff6927;
@@ -289,7 +289,7 @@ a {
 .headline {
   font-family: var(--font-display);
   font-weight: 400;
-  font-variation-settings: 'EXPO' 0;
+  font-variation-settings: 'EXPO' -50;
   font-size: clamp(1.05rem, 1.39vw, 1.25rem);
   line-height: 1.25;
   color: var(--black);
