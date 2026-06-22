@@ -919,3 +919,27 @@ a {
     max-width: 34rem;
   }
 }
+
+/* =========================================================================
+   HERO ENTRANCE ANIMATION (home page only)
+   ========================================================================= */
+@keyframes hero-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero .brand,
+  .hero .headline,
+  .hero .nav,
+  .hero .footer,
+  .hero .visual {
+    opacity: 0;
+    animation: hero-fade-in 0.7s ease-out forwards;
+  }
+  .hero .brand,
+  .hero .headline { animation-delay: 0.1s; }
+  .hero .nav,
+  .hero .footer  { animation-delay: 0.8s; }
+  .hero .visual  { animation-delay: 1.5s; }
+}
