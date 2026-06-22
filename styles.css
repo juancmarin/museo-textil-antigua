@@ -693,6 +693,10 @@ a {
     align-items: center;
   }
 
+  .nav__link {
+    font-variation-settings: 'EXPO' -50;
+  }
+
   .form-page .nav__link {
     font-size: 16px;
   }
