@@ -625,9 +625,7 @@ a {
 .lead {
   color: var(--orange);
   font-weight: 400;
-  /* Subtítulo = Exposure VAR:0 (eje EXPO neutro), idéntico al cuerpo salvo el
-     color naranja (Figma node 1:399). 16px a la métrica del diseño. */
-  font-variation-settings: 'EXPO' 0;
+  font-variation-settings: 'EXPO' -25;
   font-size: clamp(0.95rem, 1.11vw, 1rem);
   line-height: 1.35;
   margin: 0 0 1rem;
