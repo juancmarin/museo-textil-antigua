@@ -180,9 +180,7 @@ a {
 .nav__link {
   font-family: var(--font-display);
   font-weight: 400;
-  /* Figma usa la instancia Exposure VAR:0 (eje EXPO neutro = peso regular),
-     no la variante pesada; el item de nav va en peso normal. */
-  font-variation-settings: 'EXPO' 0;
+  font-variation-settings: 'EXPO' -25;
   font-size: 1rem;
   text-decoration: underline;
   text-underline-offset: 4px;
