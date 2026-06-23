@@ -162,6 +162,15 @@ a {
   object-fit: cover;
 }
 
+/* Discourage casual saving: no drag, no selection, no iOS long-press menu.
+   No protege contra DevTools ni acceso directo a la URL. */
+.visual__art {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+}
+
 /* El SVG de respaldo arranca oculto; el onerror del <img> lo muestra si el
    asset real todavía no existe. */
 .visual__fallback {
