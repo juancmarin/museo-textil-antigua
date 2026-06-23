@@ -143,6 +143,7 @@ a {
   /* Columna del motivo textil (rombos) = 56% del ancho; contenido = 44% */
   grid-template-columns: 56% 44%;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 /* ---------- Columna izquierda: motivo textil ---------- */
@@ -477,6 +478,7 @@ a {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
   overflow-x: hidden;
 }
 
