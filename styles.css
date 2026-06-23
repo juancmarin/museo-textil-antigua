@@ -922,6 +922,11 @@ a {
   }
 }
 
+/* Glyphify: outline-rendered titles via opentype.js. Visibility-hidden until
+   the SVG is in the DOM so we never flash the rasterized webfont. */
+[data-glyphify]:not(.glyphify-ready) { visibility: hidden; }
+[data-glyphify] svg { display: block; max-width: 100%; height: auto; }
+
 /* =========================================================================
    HERO ENTRANCE ANIMATION (home page only)
    Curves and stagger inspired by Framer Motion's "smooth" presets.
