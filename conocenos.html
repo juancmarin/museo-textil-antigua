@@ -23,7 +23,7 @@
 
 <body class="page conoce">
   <!-- ============ Barra superior ============ -->
-  <header class="topbar">
+  <header class="topbar" data-anim data-anim-delay="50">
     <a href="index.html" aria-label="Inicio MUTEX">
       <img
         class="topbar__logo"
@@ -44,23 +44,23 @@
     <!-- Intro: texto a la izquierda, patrón ancho arriba a la derecha -->
     <section class="conoce__intro">
       <div class="conoce__intro-text">
-        <h1 class="display-title">Bienvenidxs<br>al MUTEX</h1>
-        <p class="lead">
+        <h1 class="display-title" data-anim data-anim-delay="220">Bienvenidxs<br>al MUTEX</h1>
+        <p class="lead" data-anim data-anim-delay="360">
           El Museo Textil de Antigua abrirá sus puertas en el último trimestre del 2026
         </p>
-        <p class="body-text">
+        <p class="body-text" data-anim data-anim-delay="500">
           El Mutex será un lugar para aprender a ver las artes textiles de los pueblos indígenas
           de Guatemala como parte integral de sus sistemas de conocimiento.
         </p>
       </div>
-      <img class="conoce__pattern conoce__pattern--top" src="assets/patron_conocenos_1.svg" alt="" aria-hidden="true" />
+      <img class="conoce__pattern conoce__pattern--top" src="assets/patron_conocenos_1.svg" alt="" aria-hidden="true" data-anim="reveal" data-anim-delay="600" />
     </section>
 
     <!-- Patrón abajo a la izquierda + dos columnas de texto -->
     <section class="conoce__cols">
-      <img class="conoce__pattern conoce__pattern--bottom" src="assets/patron_conocenos_2.svg" alt="" aria-hidden="true" />
+      <img class="conoce__pattern conoce__pattern--bottom" src="assets/patron_conocenos_2.svg" alt="" aria-hidden="true" data-anim="reveal" />
 
-      <div class="conoce__col">
+      <div class="conoce__col" data-anim>
         <h2 class="display-title">Una mirada<br>diferente</h2>
         <p class="lead">La belleza está en<br>el significado</p>
         <p class="body-text">
@@ -71,7 +71,7 @@
         </p>
       </div>
 
-      <div class="conoce__col">
+      <div class="conoce__col" data-anim data-anim-delay="140">
         <h2 class="display-title">De la mano de<br>las comunidades<br>portadoras</h2>
         <p class="lead">Nos esforzamos por contar<br>historias completas</p>
         <p class="body-text">
@@ -85,7 +85,7 @@
   </main>
 
   <!-- ============ Footer ============ -->
-  <footer class="footer">
+  <footer class="footer" data-anim>
     <ul class="social" aria-label="Redes sociales">
       <li><a class="social__link" href="https://www.instagram.com/museotextilantigua" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a></li>
       <li><a class="social__link" href="https://www.facebook.com/profile.php?id=61590683252544" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.3-1.5 1.6-1.5H17V4.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.1V10.5H8v3h2.5V21h3Z"/></svg></a></li>
@@ -93,5 +93,6 @@
     </ul>
     <p class="footer__legal">Antigua, Guatemala<br />© 2026 MUTEX</p>
   </footer>
+  <script defer src="assets/anim.js"></script>
 </body>
 </html>

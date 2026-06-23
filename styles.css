@@ -972,3 +972,47 @@ a {
     will-change: opacity, transform, filter;
   }
 }
+
+/* =========================================================================
+   INTERIOR PAGE ANIMATIONS — scroll-in via [data-anim]
+   Initial paint hides anything tagged; assets/anim.js reveals each
+   element with its stagger as it enters the viewport.
+   ========================================================================= */
+@keyframes anim-rise {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes anim-reveal {
+  from { opacity: 0; transform: scale(0.985) translate3d(0, 12px, 0); filter: blur(6px); }
+  to   { opacity: 1; transform: scale(1) translate3d(0, 0, 0); filter: blur(0); }
+}
+
+@keyframes anim-pop {
+  from { opacity: 0; transform: translate3d(0, 8px, 0) scale(0.96); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-anim] {
+    opacity: 0;
+    will-change: opacity, transform;
+  }
+  [data-anim].is-in {
+    animation-fill-mode: forwards;
+    animation-duration: 0.8s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    animation-name: anim-rise;
+  }
+  [data-anim="reveal"].is-in {
+    animation-name: anim-reveal;
+    animation-duration: 1.4s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform, filter;
+  }
+  [data-anim="pop"].is-in {
+    animation-name: anim-pop;
+    animation-duration: 0.7s;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
