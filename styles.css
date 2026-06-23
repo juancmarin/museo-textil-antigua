@@ -971,6 +971,50 @@ a {
     animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
     will-change: opacity, transform, filter;
   }
+
+  /* Síguenos mirrors the home page sequence: content first
+     (brand → headline → subhead → form), then nav + footer, then
+     the visual artwork settles in last. */
+  .form-page .brand,
+  .form-page .headline,
+  .form-page .subhead,
+  .form-page .form,
+  .form-page .nav,
+  .form-page .footer,
+  .form-page .visual {
+    opacity: 0;
+    will-change: opacity, transform;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .form-page .brand,
+  .form-page .headline,
+  .form-page .subhead,
+  .form-page .form {
+    animation-name: hero-rise;
+    animation-duration: 0.9s;
+  }
+  .form-page .brand    { animation-delay: 0.15s; }
+  .form-page .headline { animation-delay: 0.30s; }
+  .form-page .subhead  { animation-delay: 0.45s; }
+  .form-page .form     { animation-delay: 0.60s; }
+
+  .form-page .nav,
+  .form-page .footer {
+    animation-name: hero-rise;
+    animation-duration: 0.8s;
+  }
+  .form-page .nav    { animation-delay: 1.05s; }
+  .form-page .footer { animation-delay: 1.20s; }
+
+  .form-page .visual {
+    animation-name: hero-reveal;
+    animation-duration: 1.6s;
+    animation-delay: 2.10s;
+    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform, filter;
+  }
 }
 
 /* =========================================================================
