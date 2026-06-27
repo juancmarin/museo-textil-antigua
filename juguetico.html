@@ -37,57 +37,20 @@
   .view[hidden] { display: none; }
 
   /* ─── Editor ─── */
-  #editor-view { background: var(--sacbe); }
-
-  .topbar {
-    background: var(--dark);
-    padding: 14px 20px;
-  }
-  .topbar__row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .topbar__brand-tag {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .topbar__dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--achiote);
-  }
-  .topbar__brand {
-    color: var(--sacbe);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  .topbar__title {
-    color: var(--sacbe);
-    font-size: 20px;
-    font-weight: 700;
-    margin: 4px 0 0;
-    letter-spacing: -0.02em;
-  }
-  .topbar__subtitle {
-    color: rgba(232, 229, 217, 0.6);
-    font-size: 13px;
-    margin: 6px 0 0;
-    line-height: 1.4;
+  #editor-view {
+    background: var(--light-bg);
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
   }
 
   .btn-gallery {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 8px;
-    padding: 8px 14px;
+    background: var(--dark);
+    border: none;
+    border-radius: 6px;
+    padding: 7px 12px;
     color: var(--sacbe);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     display: flex;
@@ -617,37 +580,20 @@
   /* Responsive */
   @media (max-width: 479px) {
     .tool-btn--action .label { display: none; }
-    .topbar { padding: 12px 16px; }
-    .topbar__title { font-size: 18px; }
     .toolbar { padding: 8px 12px; }
     .btn-gallery { padding: 7px 10px; font-size: 12px; }
     .modal__box { padding: 22px; }
     .canvas-area { padding: 16px 10px; }
   }
+
+  /* Reglas para modo embebido — se llenará en Pasada 2 cuando se integre con WordPress */
+  body.embedded { }
 </style>
 </head>
 <body>
 
 <!-- ──────────── EDITOR ──────────── -->
 <div id="editor-view" class="view">
-  <header class="topbar">
-    <div class="topbar__row">
-      <div>
-        <div class="topbar__brand-tag">
-          <span class="topbar__dot"></span>
-          <span class="topbar__brand">MUTEX</span>
-        </div>
-        <h1 class="topbar__title">Juguetico</h1>
-      </div>
-      <button id="btn-gallery" class="btn-gallery" type="button">
-        <span class="ic" id="icon-users-btn"></span>
-        <span>Galería</span>
-        <span id="gallery-badge" class="badge" hidden>0</span>
-      </button>
-    </div>
-    <p class="topbar__subtitle">Crea tu propio diseño textil inspirado en la tradición guatemalteca</p>
-  </header>
-
   <div class="toolbar">
     <button class="tool-btn active" data-tool="draw" type="button">
       <span class="ic" id="icon-pencil"></span><span>Dibujar</span>
@@ -686,6 +632,12 @@
         <span class="ic" id="icon-chev-up"></span>
       </button>
     </div>
+    <div class="tool-sep"></div>
+    <button id="btn-gallery" class="btn-gallery" type="button">
+      <span class="ic" id="icon-users-btn"></span>
+      <span>Galería</span>
+      <span id="gallery-badge" class="badge" hidden>0</span>
+    </button>
   </div>
 
   <div class="canvas-area">
@@ -806,6 +758,20 @@
   var MAX_HISTORY = 20;
   var API_GUARDAR = '/api/guardar';
   var API_GALERIA = '/api/galeria';
+
+  /* ─── embed bridge ─── */
+  function inEmbedMode() {
+    return new URLSearchParams(window.location.search).get('embedded') === '1';
+  }
+  function postToHost(type, payload) {
+    // TODO(embed): restringir targetOrigin a https://museotextildeantigua.com antes de producción
+    try {
+      window.parent.postMessage({ type: type, payload: payload || {} }, '*');
+    } catch (_) {}
+  }
+  window.jugueticoRequestClose = function () {
+    postToHost('juguetico:close-requested');
+  };
 
   /* ─── state ─── */
   var state = {
@@ -1223,6 +1189,10 @@
           if (state.gallery.length > MAX_GALLERY) state.gallery.length = MAX_GALLERY;
           refreshGalleryBadge();
         }
+        postToHost('juguetico:design-saved', {
+          designId: design ? design.id : null,
+          emailMasked: design ? design.email_masked : null,
+        });
         // Adjust success message if email wasn't sent (e.g. Resend in sandbox)
         var successP = document.querySelector('#success-view p');
         if (successP) {
@@ -1281,6 +1251,7 @@
     if (el) el.innerHTML = icon(name, size, color, sw);
   }
   function init() {
+    if (inEmbedMode()) document.body.classList.add('embedded');
     fillIcon('icon-pencil', 'pencil', 15);
     fillIcon('icon-eraser', 'eraser', 15);
     fillIcon('icon-trash', 'trash', 14);
@@ -1381,6 +1352,8 @@
     updateBottom();
     refreshUndoBtn();
     loadGallery();
+
+    postToHost('juguetico:ready', { version: '1.0' });
   }
 
   if (document.readyState === 'loading') {
