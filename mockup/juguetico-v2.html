@@ -184,29 +184,30 @@
     background: #fff;
     transform: rotate(45deg);
   }
-  .popover-section {
+  .format-toggle {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
     display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-  .popover-divider {
-    width: 1px;
-    height: 40px;
-    background: rgba(45,37,32,0.12);
-    margin: 0 4px;
+    gap: 4px;
+    z-index: 3;
+    background: rgba(45,37,32,0.7);
+    border-radius: 8px;
+    padding: 4px;
   }
   .format-btn {
-    width: 40px; height: 40px;
-    background: var(--sacbe);
+    width: 32px; height: 32px;
+    background: transparent;
     border-radius: 6px;
-    border: 2px solid transparent;
+    border: none;
     display: flex; align-items: center; justify-content: center;
-    transition: border-color 0.15s, transform 0.15s;
+    transition: background 0.15s;
     padding: 0;
     cursor: pointer;
+    color: rgba(234,230,219,0.5);
   }
-  .format-btn:hover { transform: translateY(-1px); }
-  .format-btn.active { border-color: var(--achiote); }
+  .format-btn:hover { background: rgba(255,255,255,0.08); }
+  .format-btn.active { background: rgba(255,255,255,0.15); color: var(--sacbe); }
 
   .preset-chip {
     width: 56px; height: 56px;
@@ -368,7 +369,7 @@
     </button>
     <!-- 3: zoom -->
     <button class="side-btn" data-action="zoom" aria-label="Zoom">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/><path d="M11 8v6"/><path d="M8 11h6"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m20 20-4-4"/><path d="M10.5 7.5v6"/><path d="M7.5 10.5h6"/></svg>
     </button>
     <!-- 4: limpiar -->
     <button class="side-btn" data-action="clear" aria-label="Limpiar">
@@ -397,13 +398,6 @@
       <button class="preset-chip" data-preset="1" title="Medio"><svg width="28" height="28" viewBox="0 0 28 28"><g fill="#000"><polygon points="14,3 17,6 14,9 11,6"/><polygon points="8,9 11,12 8,15 5,12"/><polygon points="20,9 23,12 20,15 17,12"/><polygon points="14,15 17,18 14,21 11,18"/></g></svg></button>
       <button class="preset-chip active" data-preset="2" title="Amplio"><svg width="34" height="34" viewBox="0 0 34 34"><g fill="#000"><polygon points="17,4 22,9 17,14 12,9"/><polygon points="8,12 13,17 8,22 3,17"/><polygon points="26,12 31,17 26,22 21,17"/><polygon points="17,20 22,25 17,30 12,25"/></g></svg></button>
       <button class="preset-chip" data-preset="3" title="Grande"><svg width="42" height="42" viewBox="0 0 42 42"><g fill="#000"><polygon points="21,5 28,12 21,19 14,12"/><polygon points="10,16 17,23 10,30 3,23"/><polygon points="32,16 39,23 32,30 25,23"/><polygon points="21,27 28,34 21,41 14,34"/></g></svg></button>
-      <div class="popover-divider"></div>
-      <button class="format-btn active" data-format="vertical" title="Vertical">
-        <svg width="16" height="22" viewBox="0 0 16 22" fill="none" stroke="#2D2520" stroke-width="1.5" rx="2"><rect x="1" y="1" width="14" height="20" rx="2"/></svg>
-      </button>
-      <button class="format-btn" data-format="square" title="Cuadrado">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#2D2520" stroke-width="1.5"><rect x="1" y="1" width="18" height="18" rx="2"/></svg>
-      </button>
     </div>
 
     <div class="popover" id="pop-palette" hidden style="top: 50px;">
@@ -424,6 +418,14 @@
   <div class="canvas-area">
     <div class="canvas-wrap">
       <svg id="grid-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="format-toggle">
+      <button class="format-btn active" data-format="vertical" title="Vertical">
+        <svg width="14" height="20" viewBox="0 0 14 20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="12" height="18" rx="2"/></svg>
+      </button>
+      <button class="format-btn" data-format="square" title="Cuadrado">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="16" height="16" rx="2"/></svg>
+      </button>
     </div>
   </div>
 
