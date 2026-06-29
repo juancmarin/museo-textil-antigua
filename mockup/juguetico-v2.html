@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mockup Juguetico v2 — MUTEX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --achiote: #FF6927;
+    --sacbe:   #EAE6DB;
+    --dark:    #2D2520;
+    --mid:     #6B5E54;
+    --magenta: #E5007E;
+    --durazno: #FFCC71;
+    --cian:    #009EE2;
+    --paint-bg: var(--sacbe);
+    --paint-fg: #000000;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body {
+    font-family: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+    background: #444;
+    color: var(--dark);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* Faux fondo página museo */
+  .museum-bg {
+    position: fixed; inset: 0;
+    background: var(--sacbe);
+    background-image:
+      radial-gradient(rgba(45,37,32,0.04) 1px, transparent 1px),
+      radial-gradient(rgba(45,37,32,0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: 0 0, 12px 12px;
+    z-index: 0;
+  }
+  .museum-bg::after {
+    content: 'Página del Museo (WordPress)';
+    position: absolute; top: 50%; left: 60%;
+    transform: translate(-50%, -50%);
+    font-size: 28px; color: rgba(45,37,32,0.18);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  /* Bookmark vertical (WordPress lo renderizaría) */
+  .bookmark {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 28px;
+    background: var(--dark);
+    z-index: 60;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bookmark__text {
+    color: var(--sacbe);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    font-style: italic;
+    user-select: none;
+  }
+  .bookmark__text .dot { font-style: normal; margin: 0 6px; }
+
+  /* Overlay del juguetico */
+  .overlay {
+    position: fixed;
+    inset: 0 35% 0 28px; /* deja a la vista parte de la "página del museo" a la derecha */
+    background: var(--dark);
+    z-index: 50;
+    display: flex;
+    align-items: stretch;
+    padding: 24px 24px 24px 16px;
+    transition: inset 0.25s ease;
+  }
+  .overlay.collapsed {
+    inset: 0 100% 0 28px;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* Botón cerrar */
+  .frame__close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 38px; height: 38px;
+    background: transparent;
+    border: 1.5px solid rgba(234,230,219,0.4);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--sacbe);
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .frame__close:hover { background: rgba(255,255,255,0.08); border-color: var(--sacbe); }
+
+  /* Sidebar de 8 botones */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 8px;
+    z-index: 2;
+  }
+  .side-btn {
+    width: 44px; height: 44px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--sacbe);
+    transition: background 0.15s;
+    position: relative;
+  }
+  .side-btn:hover { background: rgba(255,255,255,0.08); }
+  .side-btn.active {
+    background: var(--achiote);
+    color: #fff;
+  }
+  .side-btn svg { display: block; }
+  .side-btn[data-open="true"] {
+    background: rgba(255,255,255,0.12);
+  }
+
+  /* Canvas area */
+  .canvas-area {
+    flex: 1;
+    background: var(--paint-bg);
+    border-radius: 4px;
+    display: block;
+    position: relative;
+    margin-left: 12px;
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+  .canvas-area.square {
+    flex: none;
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .canvas-wrap {
+    position: absolute;
+    inset: 0;
+  }
+  #grid-svg {
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+    cursor: crosshair;
+    display: block;
+  }
+
+  /* Popovers */
+  .popover {
+    position: absolute;
+    left: 72px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+    z-index: 5;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .popover[hidden] { display: none; }
+  .popover::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 14px;
+    width: 12px; height: 12px;
+    background: #fff;
+    transform: rotate(45deg);
+  }
+  .popover-section {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .popover-divider {
+    width: 1px;
+    height: 40px;
+    background: rgba(45,37,32,0.12);
+    margin: 0 4px;
+  }
+  .format-btn {
+    width: 40px; height: 40px;
+    background: var(--sacbe);
+    border-radius: 6px;
+    border: 2px solid transparent;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, transform 0.15s;
+    padding: 0;
+    cursor: pointer;
+  }
+  .format-btn:hover { transform: translateY(-1px); }
+  .format-btn.active { border-color: var(--achiote); }
+
+  .preset-chip {
+    width: 56px; height: 56px;
+    background: var(--sacbe);
+    border-radius: 6px;
+    border: 2px solid transparent;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.15s, transform 0.15s;
+    padding: 0;
+  }
+  .preset-chip:hover { transform: translateY(-1px); }
+  .preset-chip.active { border-color: var(--achiote); }
+  .preset-chip svg { display: block; }
+
+  .swatch {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: var(--sacbe);
+    transition: transform 0.15s, border-color 0.15s;
+    padding: 0;
+    position: relative;
+  }
+  .swatch:hover { transform: translateY(-1px); }
+  .swatch.active { border-color: var(--achiote); }
+  .swatch::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 18px; height: 18px;
+    transform: translate(-50%, -50%);
+    background: #000;
+    border-radius: 50%;
+  }
+
+  .dl-btn {
+    background: var(--achiote);
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+  }
+  .dl-btn.alt { background: rgba(255,105,39,0.25); color: var(--achiote); }
+  .dl-btn:hover { filter: brightness(1.05); }
+
+  /* Bookmark visible al lado derecho del overlay */
+  .overlay__bookmark {
+    position: absolute;
+    right: -28px;
+    top: 0; bottom: 0;
+    width: 28px;
+    background: var(--dark);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .overlay__bookmark .bookmark__text { color: var(--sacbe); }
+
+  /* Modal compartir */
+  .modal {
+    position: fixed; inset: 0;
+    background: rgba(45,37,32,0.6);
+    z-index: 80;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal[hidden] { display: none; }
+  .modal__box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 26px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+  }
+  .modal__close {
+    position: absolute; top: 14px; right: 14px;
+    background: none; border: none; color: var(--mid); padding: 4px;
+  }
+  .modal h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.01em; }
+  .modal p.intro { margin: 0 0 18px; font-size: 13px; color: var(--mid); line-height: 1.5; }
+  .modal input {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(45,37,32,0.15);
+    font-size: 14px;
+    font-family: inherit;
+    margin-bottom: 14px;
+  }
+  .modal__submit {
+    width: 100%;
+    padding: 13px;
+    border-radius: 10px;
+    border: none;
+    background: var(--achiote);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  .modal__gallery {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    border: 1.5px solid var(--achiote);
+    background: transparent;
+    color: var(--achiote);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Estado bar abajo */
+  .mockup-hud {
+    position: fixed;
+    bottom: 14px; left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border-radius: 999px;
+    padding: 8px 6px 8px 16px;
+    font-size: 12px;
+    color: var(--mid);
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+    z-index: 100;
+  }
+  .mockup-hud button {
+    background: var(--dark);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="museum-bg" aria-hidden="true"></div>
+
+<!-- Bookmark base — Wordpress lo renderizaría siempre -->
+<div class="bookmark" id="bookmark" role="button" tabindex="0" aria-label="Abrir juguetico">
+  <span class="bookmark__text"><em>abstrae</em> <span class="dot">◆</span> <em>traza</em> <span class="dot">◆</span> <em>juega</em></span>
+</div>
+
+<!-- Overlay del juguetico expandido -->
+<div class="overlay" id="overlay">
+
+  <div class="sidebar">
+    <!-- 1: espaciado -->
+    <button class="side-btn" data-action="spacing" aria-label="Espaciado">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 22,12 12,22 2,12"/></svg>
+    </button>
+    <!-- 2: color -->
+    <button class="side-btn" data-action="palette" aria-label="Color">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
+    </button>
+    <!-- 3: borrar -->
+    <button class="side-btn" data-action="erase" aria-label="Borrar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.6 5.6c1 1 1 2.5 0 3.4L13 21"/><path d="M22 21H7"/><path d="m5 11 9 9"/></svg>
+    </button>
+    <!-- 4: limpiar -->
+    <button class="side-btn" data-action="clear" aria-label="Limpiar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+    </button>
+    <!-- 5: espejo H -->
+    <button class="side-btn" data-action="mirrorH" aria-label="Espejo horizontal">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="16" rx="1"/><rect x="14" y="4" width="7" height="16" rx="1"/><path d="M12 2v20"/></svg>
+    </button>
+    <!-- 6: espejo V -->
+    <button class="side-btn" data-action="mirrorV" aria-label="Espejo vertical">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="7" rx="1"/><rect x="4" y="14" width="16" height="7" rx="1"/><path d="M2 12h20"/></svg>
+    </button>
+    <!-- 7: compartir -->
+    <button class="side-btn" data-action="share" aria-label="Compartir">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7-7 7 7"/></svg>
+    </button>
+    <!-- 8: descargar -->
+    <button class="side-btn" data-action="download" aria-label="Descargar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg>
+    </button>
+
+    <!-- Popovers -->
+    <div class="popover" id="pop-spacing" hidden style="top: 0px;">
+      <button class="preset-chip" data-preset="0" title="Fino"><svg width="22" height="22" viewBox="0 0 22 22"><g fill="#000"><polygon points="11,2 14,5 11,8 8,5"/><polygon points="5,8 8,11 5,14 2,11"/><polygon points="17,8 20,11 17,14 14,11"/><polygon points="11,14 14,17 11,20 8,17"/></g></svg></button>
+      <button class="preset-chip" data-preset="1" title="Medio"><svg width="28" height="28" viewBox="0 0 28 28"><g fill="#000"><polygon points="14,3 17,6 14,9 11,6"/><polygon points="8,9 11,12 8,15 5,12"/><polygon points="20,9 23,12 20,15 17,12"/><polygon points="14,15 17,18 14,21 11,18"/></g></svg></button>
+      <button class="preset-chip active" data-preset="2" title="Amplio"><svg width="34" height="34" viewBox="0 0 34 34"><g fill="#000"><polygon points="17,4 22,9 17,14 12,9"/><polygon points="8,12 13,17 8,22 3,17"/><polygon points="26,12 31,17 26,22 21,17"/><polygon points="17,20 22,25 17,30 12,25"/></g></svg></button>
+      <button class="preset-chip" data-preset="3" title="Grande"><svg width="42" height="42" viewBox="0 0 42 42"><g fill="#000"><polygon points="21,5 28,12 21,19 14,12"/><polygon points="10,16 17,23 10,30 3,23"/><polygon points="32,16 39,23 32,30 25,23"/><polygon points="21,27 28,34 21,41 14,34"/></g></svg></button>
+      <div class="popover-divider"></div>
+      <button class="format-btn active" data-format="vertical" title="Vertical">
+        <svg width="16" height="22" viewBox="0 0 16 22" fill="none" stroke="#2D2520" stroke-width="1.5" rx="2"><rect x="1" y="1" width="14" height="20" rx="2"/></svg>
+      </button>
+      <button class="format-btn" data-format="square" title="Cuadrado">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#2D2520" stroke-width="1.5"><rect x="1" y="1" width="18" height="18" rx="2"/></svg>
+      </button>
+    </div>
+
+    <div class="popover" id="pop-palette" hidden style="top: 50px;">
+      <button class="swatch active" data-pal="1" style="background: var(--sacbe)"></button>
+      <button class="swatch" data-pal="2" style="background: var(--magenta)"></button>
+      <button class="swatch" data-pal="3" style="background: var(--durazno)"></button>
+      <button class="swatch" data-pal="4" style="background: var(--cian)"></button>
+    </div>
+
+    <div class="popover" id="pop-download" hidden style="top: 400px;">
+      <button class="dl-btn" id="dl-jpg">
+        <svg width="16" height="16" viewBox="0 0 24 24" style="margin-right:6px;vertical-align:-3px" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m5 12 7 7 7-7"/></svg>JPG
+      </button>
+      <button class="dl-btn alt" id="dl-svg">SVG</button>
+    </div>
+  </div>
+
+  <div class="canvas-area">
+    <div class="canvas-wrap">
+      <svg id="grid-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+  </div>
+
+  <button class="frame__close" id="btn-close" aria-label="Cerrar">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="4" width="16" height="16" rx="2"/>
+      <path d="M9 9h6v6H9z"/>
+    </svg>
+  </button>
+
+  <div class="overlay__bookmark" aria-hidden="true">
+    <span class="bookmark__text"><em>abstrae</em> <span class="dot">◆</span> <em>traza</em> <span class="dot">◆</span> <em>juega</em></span>
+  </div>
+</div>
+
+<!-- Modal compartir -->
+<div class="modal" id="modal-share" hidden>
+  <div class="modal__box">
+    <button class="modal__close" id="modal-share-close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+    </button>
+    <div style="margin-bottom:14px"><svg width="80" height="80" viewBox="0 0 60 60" style="background:var(--sacbe);border-radius:6px"><g fill="#000"><polygon points="30,8 38,16 30,24 22,16"/><polygon points="14,24 22,32 14,40 6,32"/><polygon points="46,24 54,32 46,40 38,32"/><polygon points="30,40 38,48 30,56 22,48"/></g></svg></div>
+    <h3>Comparte tu diseño con nosotros</h3>
+    <p class="intro">Ingresa tu correo electrónico y tu diseño se exhibirá en la galería colectiva del museo.</p>
+    <input type="email" placeholder="tu@correo.com">
+    <p style="font-size:11px;color:var(--mid);text-align:left;margin:0 0 14px;line-height:1.4;">Acepto <a href="#" style="color:var(--achiote)">términos</a> y <a href="#" style="color:var(--achiote)">política de privacidad</a></p>
+    <button class="modal__submit">Compartir</button>
+    <button class="modal__gallery">Galería</button>
+  </div>
+</div>
+
+<!-- HUD demo -->
+<div class="mockup-hud">
+  <span>Mockup interactivo — Juguetico v2</span>
+  <button onclick="document.getElementById('overlay').classList.toggle('collapsed')">Cerrar / abrir</button>
+</div>
+
+<script>
+(function () {
+  // CS = "cell size" del rombo (radio). Los presets cambian CS, y rows/cols
+  // se recalculan para llenar exactamente la zona beige.
+  var CS_PRESETS = [10, 14, 20, 30]; // fino → medio → amplio → grande
+  var CS = CS_PRESETS[2];
+  var rows = 0, cols = 0;
+  var grid = [];
+  function fitGrid() {
+    var area = document.querySelector('.canvas-area');
+    var rect = area.getBoundingClientRect();
+    if (!rect.width || !rect.height) return false;
+    var newCols = Math.max(4, Math.ceil(rect.width / (2 * CS)) + 1);
+    var newRows = Math.max(4, Math.ceil(rect.height / CS) + 2);
+    if (newRows === rows && newCols === cols && grid.length) return false;
+    var ng = [];
+    for (var r = 0; r < newRows; r++) {
+      var row = [];
+      for (var c = 0; c < newCols; c++) {
+        row.push((grid[r] && grid[r][c]) ? 1 : 0);
+      }
+      ng.push(row);
+    }
+    rows = newRows; cols = newCols; grid = ng;
+    return true;
+  }
+  fitGrid();
+
+  // Seed: un rombo decorativo centrado para que se vea contenido inicial.
+  (function seed() {
+    var cr = Math.floor(rows/2), cc = Math.floor(cols/2);
+    var sz = Math.min(5, Math.floor(Math.min(rows,cols)/3));
+    for (var d = 0; d <= sz; d++) {
+      for (var dr = -d; dr <= d; dr++) {
+        var dc = d - Math.abs(dr);
+        [[cr+dr, cc-dc], [cr+dr, cc+dc]].forEach(function (p) {
+          if (grid[p[0]] && grid[p[0]][p[1]] !== undefined && d === sz) grid[p[0]][p[1]] = 1;
+        });
+      }
+    }
+  })();
+
+  function cellCenter(r, c) {
+    return { cx: c*2*CS + (r%2 ? CS : 0), cy: r*CS };
+  }
+  function diamondPts(cx, cy) {
+    return cx+','+(cy-CS)+' '+(cx+CS)+','+cy+' '+cx+','+(cy+CS)+' '+(cx-CS)+','+cy;
+  }
+  function makeGrid() {
+    grid = [];
+    for (var r = 0; r < rows; r++) {
+      var row = [];
+      for (var c = 0; c < cols; c++) row.push(0);
+      grid.push(row);
+    }
+  }
+
+  function render() {
+    var svg = document.getElementById('grid-svg');
+    var area = document.querySelector('.canvas-area');
+    var areaRect = area.getBoundingClientRect();
+    svg.setAttribute('viewBox', '0 0 ' + areaRect.width + ' ' + areaRect.height);
+    svg.removeAttribute('preserveAspectRatio');
+    var html = '';
+    var bg = getComputedStyle(document.documentElement).getPropertyValue('--paint-bg').trim();
+    var fg = getComputedStyle(document.documentElement).getPropertyValue('--paint-fg').trim();
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var cc = cellCenter(r, c);
+        var fill = grid[r][c] ? fg : bg;
+        html += '<polygon data-r="'+r+'" data-c="'+c+'" points="'+diamondPts(cc.cx, cc.cy)+'" fill="'+fill+'" stroke="rgba(45,37,32,0.10)" stroke-width="0.5"/>';
+      }
+    }
+    svg.innerHTML = html;
+  }
+  render();
+
+  // Dibujo
+  var drawing = false, mode = 'draw';
+  function hit(e) {
+    var svg = document.getElementById('grid-svg');
+    var rect = svg.getBoundingClientRect();
+    var x = (e.clientX - rect.left) / rect.width * rect.width;
+    var y = (e.clientY - rect.top) / rect.height * rect.height;
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var cc = cellCenter(r, c);
+        if (Math.abs(x - cc.cx)/CS + Math.abs(y - cc.cy)/CS <= 1) {
+          if (mode === 'draw') grid[r][c] = 1;
+          else if (mode === 'erase') grid[r][c] = 0;
+          render();
+          return;
+        }
+      }
+    }
+  }
+  var svg = document.getElementById('grid-svg');
+  svg.addEventListener('pointerdown', function(e){ drawing = true; hit(e); });
+  svg.addEventListener('pointermove', function(e){ if (drawing) hit(e); });
+  window.addEventListener('pointerup', function(){ drawing = false; });
+
+  // Acciones del sidebar
+  var openPop = null;
+  function closeAllPopovers() {
+    ['pop-spacing','pop-palette','pop-download'].forEach(function(id){
+      document.getElementById(id).hidden = true;
+    });
+    document.querySelectorAll('.side-btn').forEach(function(b){ b.removeAttribute('data-open'); });
+    openPop = null;
+  }
+  function togglePop(id, btn) {
+    if (openPop === id) { closeAllPopovers(); return; }
+    closeAllPopovers();
+    document.getElementById(id).hidden = false;
+    btn.setAttribute('data-open', 'true');
+    openPop = id;
+  }
+  document.querySelectorAll('.side-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var act = btn.dataset.action;
+      if (act === 'spacing')  return togglePop('pop-spacing', btn);
+      if (act === 'palette')  return togglePop('pop-palette', btn);
+      if (act === 'download') return togglePop('pop-download', btn);
+      if (act === 'share') {
+        closeAllPopovers();
+        document.getElementById('modal-share').hidden = false;
+        return;
+      }
+      closeAllPopovers();
+      if (act === 'erase') {
+        mode = (mode === 'erase' ? 'draw' : 'erase');
+        document.querySelectorAll('.side-btn').forEach(function(b){
+          b.classList.toggle('active', b.dataset.action === 'erase' && mode === 'erase');
+        });
+        return;
+      }
+      if (act === 'clear') {
+        if (confirm('¿Borrar todo el diseño?')) { makeGrid(); render(); }
+        return;
+      }
+      if (act === 'mirrorH') {
+        grid = grid.map(function (row) {
+          var half = Math.ceil(row.length/2);
+          return row.map(function (v, c) { return c < half ? v : row[row.length - 1 - c]; });
+        });
+        render();
+        return;
+      }
+      if (act === 'mirrorV') {
+        var half = Math.ceil(grid.length/2);
+        grid = grid.map(function (row, r) { return r < half ? row.slice() : grid[grid.length - 1 - r].slice(); });
+        render();
+        return;
+      }
+    });
+  });
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.popover') && !e.target.closest('.side-btn')) closeAllPopovers();
+  });
+
+  // Presets espaciado — cambian CS y recalculan filas/columnas
+  document.querySelectorAll('.preset-chip').forEach(function (chip) {
+    chip.addEventListener('click', function (e) {
+      e.stopPropagation();
+      document.querySelectorAll('.preset-chip').forEach(function (c) { c.classList.remove('active'); });
+      chip.classList.add('active');
+      CS = CS_PRESETS[parseInt(chip.dataset.preset, 10)];
+      fitGrid();
+      render();
+    });
+  });
+
+  // Formato: vertical (default) o cuadrado
+  function applyFormat(fmt) {
+    var area = document.querySelector('.canvas-area');
+    if (fmt === 'square') {
+      area.classList.remove('square');
+      area.style.width = '';
+      area.style.height = '';
+      var parentRect = area.parentElement.getBoundingClientRect();
+      var sidebar = document.querySelector('.sidebar');
+      var sideW = sidebar.getBoundingClientRect().width;
+      var pad = 24 + 16 + 12;
+      var availW = parentRect.width - sideW - pad;
+      var availH = parentRect.height - 48;
+      var side = Math.floor(Math.min(availW, availH));
+      area.classList.add('square');
+      area.style.width = side + 'px';
+      area.style.height = side + 'px';
+    } else {
+      area.classList.remove('square');
+      area.style.width = '';
+      area.style.height = '';
+    }
+    rows = 0; cols = 0;
+    fitGrid();
+    render();
+  }
+  document.querySelectorAll('.format-btn').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      document.querySelectorAll('.format-btn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      applyFormat(btn.dataset.format);
+    });
+  });
+
+  // Recalcular al redimensionar
+  new ResizeObserver(function () { if (fitGrid()) render(); }).observe(document.querySelector('.canvas-area'));
+
+  // Paletas
+  var paletteMap = {
+    '1': { bg: getComputedStyle(document.documentElement).getPropertyValue('--sacbe').trim(),   fg: '#000000' },
+    '2': { bg: getComputedStyle(document.documentElement).getPropertyValue('--magenta').trim(), fg: '#000000' },
+    '3': { bg: getComputedStyle(document.documentElement).getPropertyValue('--durazno').trim(), fg: '#000000' },
+    '4': { bg: getComputedStyle(document.documentElement).getPropertyValue('--cian').trim(),    fg: '#000000' }
+  };
+  document.querySelectorAll('.swatch').forEach(function (sw) {
+    sw.addEventListener('click', function (e) {
+      e.stopPropagation();
+      document.querySelectorAll('.swatch').forEach(function (s) { s.classList.remove('active'); });
+      sw.classList.add('active');
+      var p = paletteMap[sw.dataset.pal];
+      document.documentElement.style.setProperty('--paint-bg', p.bg);
+      document.documentElement.style.setProperty('--paint-fg', p.fg);
+      render();
+    });
+  });
+
+  // Cerrar modal
+  document.getElementById('modal-share-close').addEventListener('click', function () {
+    document.getElementById('modal-share').hidden = true;
+  });
+  document.getElementById('modal-share').addEventListener('click', function (e) {
+    if (e.target.id === 'modal-share') document.getElementById('modal-share').hidden = true;
+  });
+
+  // Cerrar overlay
+  document.getElementById('btn-close').addEventListener('click', function () {
+    document.getElementById('overlay').classList.add('collapsed');
+  });
+  document.getElementById('bookmark').addEventListener('click', function () {
+    document.getElementById('overlay').classList.remove('collapsed');
+  });
+})();
+</script>
+</body>
+</html>
