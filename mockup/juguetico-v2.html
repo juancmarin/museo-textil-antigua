@@ -87,20 +87,20 @@
     overflow: hidden;
   }
 
-  /* Botón cerrar */
+  /* Botón cerrar — mismo estilo que format-toggle */
   .frame__close {
     position: absolute;
-    top: 18px;
-    right: 18px;
-    width: 38px; height: 38px;
-    background: transparent;
-    border: 1.5px solid rgba(234,230,219,0.4);
-    border-radius: 6px;
+    top: 10px;
+    right: 10px;
+    width: 32px; height: 32px;
+    background: rgba(45,37,32,0.7);
+    border: none;
+    border-radius: 8px;
     display: flex; align-items: center; justify-content: center;
-    color: var(--sacbe);
-    transition: background 0.15s, border-color 0.15s;
+    color: rgba(234,230,219,0.5);
+    transition: background 0.15s;
   }
-  .frame__close:hover { background: rgba(255,255,255,0.08); border-color: var(--sacbe); }
+  .frame__close:hover { background: rgba(45,37,32,0.9); color: var(--sacbe); }
 
   /* Sidebar de 8 botones */
   .sidebar {
@@ -257,17 +257,6 @@
   .dl-btn.alt { background: rgba(255,105,39,0.25); color: var(--achiote); }
   .dl-btn:hover { filter: brightness(1.05); }
 
-  /* Bookmark visible al lado derecho del overlay */
-  .overlay__bookmark {
-    position: absolute;
-    right: -28px;
-    top: 0; bottom: 0;
-    width: 28px;
-    background: var(--dark);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .overlay__bookmark .bookmark__text { color: var(--sacbe); }
-
   /* Modal compartir */
   .modal {
     position: fixed; inset: 0;
@@ -413,15 +402,11 @@
   </div>
 
   <button class="frame__close" id="btn-close" aria-label="Cerrar">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="4" y="4" width="16" height="16" rx="2"/>
-      <path d="M9 9h6v6H9z"/>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
     </svg>
   </button>
 
-  <div class="overlay__bookmark" aria-hidden="true">
-    <span class="bookmark__text"><em>abstrae</em> <span class="dot">◆</span> <em>traza</em> <span class="dot">◆</span> <em>juega</em></span>
-  </div>
 </div>
 
 <!-- Modal compartir -->
