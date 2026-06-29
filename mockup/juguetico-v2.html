@@ -516,7 +516,11 @@
   function togglePop(id, btn) {
     if (openPop === id) { closeAllPopovers(); return; }
     closeAllPopovers();
-    document.getElementById(id).hidden = false;
+    var pop = document.getElementById(id);
+    var sidebar = btn.closest('.sidebar');
+    var btnTop = btn.getBoundingClientRect().top - sidebar.getBoundingClientRect().top;
+    pop.style.top = btnTop + 'px';
+    pop.hidden = false;
     btn.setAttribute('data-open', 'true');
     openPop = id;
   }
