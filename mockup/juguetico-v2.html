@@ -106,6 +106,7 @@
   .sidebar {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 10px;
     padding: 12px 8px;
     z-index: 2;
@@ -345,9 +346,13 @@
     <button class="side-btn" data-action="palette" aria-label="Color">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor"/></svg>
     </button>
-    <!-- 3: zoom -->
-    <button class="side-btn" data-action="zoom" aria-label="Zoom">
+    <!-- 3: zoom in -->
+    <button class="side-btn" data-action="zoomIn" aria-label="Zoom in">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m20 20-4-4"/><path d="M10.5 7.5v6"/><path d="M7.5 10.5h6"/></svg>
+    </button>
+    <!-- 4: zoom out -->
+    <button class="side-btn" data-action="zoomOut" aria-label="Zoom out">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="7.5"/><path d="m20 20-4-4"/><path d="M7.5 10.5h6"/></svg>
     </button>
     <!-- 4: limpiar -->
     <button class="side-btn" data-action="clear" aria-label="Limpiar">
@@ -598,12 +603,14 @@
         return;
       }
       closeAllPopovers();
-      if (act === 'zoom') {
+      if (act === 'zoomIn' || act === 'zoomOut') {
         var levels = [1, 1.5, 2, 3];
-        zoomIdx = (zoomIdx + 1) % levels.length;
+        if (act === 'zoomIn' && zoomIdx < levels.length - 1) zoomIdx++;
+        if (act === 'zoomOut' && zoomIdx > 0) zoomIdx--;
         var z = levels[zoomIdx];
         document.querySelector('.canvas-wrap').style.transform = 'scale(' + z + ')';
-        btn.classList.toggle('active', z > 1);
+        document.querySelector('[data-action="zoomIn"]').classList.toggle('active', z > 1);
+        document.querySelector('[data-action="zoomOut"]').classList.toggle('active', z > 1);
         return;
       }
       if (act === 'clear') {
