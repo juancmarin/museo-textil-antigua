@@ -73,19 +73,61 @@
   /* Overlay del juguetico */
   .overlay {
     position: fixed;
-    inset: 0 35% 0 28px; /* deja a la vista parte de la "página del museo" a la derecha */
+    inset: 0 35% 0 28px;
     background: var(--dark);
     z-index: 50;
     display: flex;
     align-items: stretch;
     padding: 24px 24px 24px 16px;
-    transition: inset 0.25s ease;
+    transition: inset 0.55s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .overlay.collapsed {
     inset: 0 100% 0 28px;
     padding: 0;
     overflow: hidden;
+    transition: inset 0.45s cubic-bezier(0.7, 0, 0.84, 0);
   }
+
+  /* Content choreography */
+  .overlay .sidebar,
+  .overlay .canvas-area,
+  .overlay .frame__close {
+    transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .overlay.collapsed .sidebar,
+  .overlay.collapsed .canvas-area,
+  .overlay.collapsed .frame__close {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.15s ease, transform 0.2s ease;
+  }
+
+  /* Staggered entrance for sidebar buttons */
+  .overlay .side-btn {
+    transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .overlay.collapsed .side-btn {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+    transition: opacity 0.1s ease, transform 0.15s ease;
+  }
+  .overlay:not(.collapsed) .side-btn:nth-child(1) { transition-delay: 0.12s; }
+  .overlay:not(.collapsed) .side-btn:nth-child(2) { transition-delay: 0.15s; }
+  .overlay:not(.collapsed) .side-btn:nth-child(3) { transition-delay: 0.18s; }
+  .overlay:not(.collapsed) .side-btn:nth-child(4) { transition-delay: 0.21s; }
+  .overlay:not(.collapsed) .side-btn:nth-child(5) { transition-delay: 0.24s; }
+  .overlay:not(.collapsed) .side-btn:nth-child(6) { transition-delay: 0.27s; }
+  .overlay:not(.collapsed) .side-btn:nth-child(7) { transition-delay: 0.30s; }
+  .overlay:not(.collapsed) .side-btn:nth-child(8) { transition-delay: 0.33s; }
+  .overlay:not(.collapsed) .side-btn:nth-child(9) { transition-delay: 0.36s; }
+
+  /* Canvas area entrance */
+  .overlay:not(.collapsed) .canvas-area { transition-delay: 0.1s; }
+  .overlay:not(.collapsed) .frame__close { transition-delay: 0.35s; }
 
   /* Botón cerrar */
   .frame__close {
