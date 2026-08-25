@@ -297,7 +297,7 @@ a {
 .headline {
   font-family: var(--font-display);
   font-weight: 400;
-  font-variation-settings: 'EXPO' -75;
+  font-variation-settings: 'EXPO' -25;
   font-size: clamp(1.05rem, 1.39vw, 1.25rem);
   line-height: 1.25;
   color: var(--black);
@@ -775,7 +775,7 @@ a {
     margin: 0;
     font-size: 16px;
     font-weight: 400;
-    font-variation-settings: 'EXPO' -75;
+    font-variation-settings: 'EXPO' -25;
     color: var(--black);
   }
 
