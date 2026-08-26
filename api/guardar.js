@@ -18,9 +18,9 @@ function maskEmail(e) {
 
 async function buildPdf(grid, rows, cols, emailMasked) {
   const pdf = await PDFDocument.create();
-  pdf.setTitle('Juguetico MUTEX');
+  pdf.setTitle('Juguetico MuTex');
   pdf.setAuthor('Museo Textil Antigua');
-  pdf.setProducer('MUTEX');
+  pdf.setProducer('MuTex');
 
   const W = 595, H = 842; // A4
   const page = pdf.addPage([W, H]);
@@ -29,7 +29,7 @@ async function buildPdf(grid, rows, cols, emailMasked) {
   const reg  = await pdf.embedFont(StandardFonts.Helvetica);
 
   /* Title block */
-  page.drawText('MUTEX  ·  MUSEO TEXTIL ANTIGUA', { x: 50, y: H - 60, size: 9, font: bold, color: ACHIOTE });
+  page.drawText('MuTex  ·  MUSEO TEXTIL ANTIGUA', { x: 50, y: H - 60, size: 9, font: bold, color: ACHIOTE });
   page.drawText('Juguetico', { x: 50, y: H - 86, size: 22, font: bold, color: DARK });
   page.drawText('Tu patrón textil', { x: 50, y: H - 104, size: 11, font: reg, color: MID });
 
@@ -145,7 +145,7 @@ export default async function handler(req, res) {
   let emailSent = false;
   let reason = null;
   const resendKey = process.env.RESEND_API_KEY;
-  const fromAddr  = process.env.RESEND_FROM || 'Juguetico MUTEX <onboarding@resend.dev>';
+  const fromAddr  = process.env.RESEND_FROM || 'Juguetico MuTex <onboarding@resend.dev>';
 
   if (resendKey) {
     try {
@@ -154,7 +154,7 @@ export default async function handler(req, res) {
       const { error: mailErr } = await resend.emails.send({
         from: fromAddr,
         to: email,
-        subject: 'Tu diseño Juguetico — MUTEX',
+        subject: 'Tu diseño Juguetico — MuTex',
         html: emailHtml(),
         attachments: [{ filename: 'juguetico-mutex.pdf', content: pdfB64 }],
       });
@@ -184,7 +184,7 @@ function emailHtml() {
   <html lang="es">
     <body style="margin:0;padding:24px;background:#E8E5D9;font-family:-apple-system,system-ui,Segoe UI,sans-serif;color:#2D2520;">
       <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:16px;padding:32px;">
-        <p style="margin:0;color:#FF6927;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">MUTEX · Museo Textil Antigua</p>
+        <p style="margin:0;color:#FF6927;font-weight:700;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;">MuTex · Museo Textil Antigua</p>
         <h2 style="margin:8px 0 16px;font-size:22px;color:#2D2520;">Tu patrón textil está listo</h2>
         <p style="line-height:1.55;color:#6B5E54;margin:0 0 16px;">Adjuntamos el PDF vectorial de tu diseño del <strong>Juguetico</strong>. Lo podés imprimir, compartir o usar como inspiración para tu próximo proyecto textil.</p>
         <p style="line-height:1.55;color:#6B5E54;margin:0 0 24px;">Tu diseño también forma parte ya de la <a href="https://museo-textil-antigua.vercel.app/juguetico.html" style="color:#FF6927;font-weight:600;">galería colectiva</a> del museo.</p>
