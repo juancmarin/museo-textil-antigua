@@ -127,23 +127,31 @@ Ejemplo:
 
 ### 2.5 Formulario de captura (Síguenos)
 
-**Servicio:** [Formspree](https://formspree.io)
+**Servicio:** [Web3Forms](https://web3forms.com)
 
 | Detalle | Valor |
 |---------|-------|
-| Endpoint | `https://formspree.io/f/mvznzgnn` |
-| Plan | Free (50 envíos / mes) |
+| Endpoint | `https://api.web3forms.com/submit` |
+| Plan | Free (250 envíos / mes) |
 | Destinatario | `contacto@museotextildeantigua.com` |
 | Campos | Nombre, Apellido, Email |
 
+La cuenta es del museo, creada con `contacto@museotextildeantigua.com`.
+
+Campos ocultos en el `<form>`:
+- `access_key` — identifica el formulario. Es **pública a propósito**: solo permite enviar a este formulario, no da acceso a nada más.
+- `subject` y `from_name` — controlan el asunto y el remitente del aviso.
+- `botcheck` — honeypot antispam de Web3Forms. Va oculto; si un bot lo marca, el envío se descarta.
+
 Lógica del submit en `siguenos.html` (script inline):
 1. Valida los 3 campos con `checkValidity()` nativo.
-2. `fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } })`.
+2. Convierte el `FormData` a JSON y hace `fetch` con `Content-Type: application/json`. La API espera JSON, no `FormData`.
 3. Botón a `ENVIANDO…` durante la espera.
-4. Si OK → vista "¡Registro exitoso! Pronto recibirás más información."
-5. Si falla → mensaje de error, reactiva el botón.
+4. Verifica `res.ok` **y** `data.success === true`. La API puede responder 200 con `success: false`; sin esa segunda comprobación se mostraría éxito en un envío fallido.
+5. Si OK → vista "¡Registro exitoso! Pronto recibirás más información."
+6. Si falla → mensaje de error, reactiva el botón.
 
-Cambiar el destinatario o el servicio: editar el `action` del `<form id="newsletter-form">`. Brevo y Mailchimp funcionan con el mismo HTML.
+Cambiar el destinatario: se configura en el panel de Web3Forms, no en el HTML. Cambiar de servicio: editar el `action` y los campos ocultos del `<form id="newsletter-form">`.
 
 ### 2.6 Responsive
 
@@ -240,7 +248,7 @@ Vocabulario maya/textil (achiote = pigmento; sacbé = camino blanco).
 |----------|----------|------------------|
 | **GitHub** | Repo + trigger de CI | `juancmarin/museo-textil-antigua` (rama `main`) |
 | **Vercel** | Hosting + Edge CDN + SSL + Functions | Team `jminterfazcos-projects`, proyecto `museo-textil-antigua`, projectId `prj_kzS6lCeVmwqyBs0E32h9TpsPhcjv` |
-| **Formspree** | Backend del form de Síguenos | Endpoint `mvznzgnn`, plan free |
+| **Web3Forms** | Backend del form de Síguenos | Cuenta del museo (`contacto@museotextildeantigua.com`), plan free 250/mes |
 | **Supabase** | Base de datos de Juguetico (`designs`) | URL y service_role key en env vars de Vercel |
 | **Resend** | Envío de email con PDF (Juguetico) | API key en env vars de Vercel |
 | **GoDaddy** | Registro del dominio | `museotextildeantigua.com` (DNS pendiente) |
@@ -284,9 +292,9 @@ Borrar registros de "parking" si los hay. **No tocar** MX (correo) ni TXT.
 MTA Doble se emborrona en Retina por el anti-aliasing tipográfico. SVG paths no reciben ese tratamiento → rombos crispy.
 **Trade-off:** títulos no seleccionables (`aria-label` mantiene accesibilidad).
 
-### 5.4 Formspree en vez de backend propio
-50 leads/mes free, anti-spam incluido. Migración a Brevo/Mailchimp: cambiar `action=""`.
-**Cuándo migrar:** doble opt-in (Brevo) | unificar con campañas (Mailchimp) | volumen >50/mes.
+### 5.4 Web3Forms en vez de backend propio
+250 leads/mes free, antispam incluido, sin servidor ni base de datos que mantener. La cuenta está a nombre del museo, así que los datos son suyos desde el día uno.
+**Cuándo migrar:** doble opt-in (Brevo) | unificar con campañas (Mailchimp) | volumen mayor a 250/mes.
 
 ### 5.5 Vercel sobre el hosting de GoDaddy
 Preview URLs por rama, edge CDN, SSL auto, deploy en 30 seg, Vercel Functions para el backend de Juguetico. GoDaddy obliga FTP, no tiene Functions.
