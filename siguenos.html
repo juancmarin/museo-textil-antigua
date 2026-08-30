@@ -79,10 +79,17 @@
           <form
             id="newsletter-form"
             class="form"
-            action="https://formspree.io/f/mvznzgnn"
+            action="https://api.web3forms.com/submit"
             method="POST"
             novalidate
           >
+            <!-- Web3Forms: la clave es publica a proposito, solo permite enviar a este formulario -->
+            <input type="hidden" name="access_key" value="2948c56b-56ed-4b15-9352-8eabfd2fc275" />
+            <input type="hidden" name="subject" value="Nueva inscripcion desde la landing de MuTex" />
+            <input type="hidden" name="from_name" value="MuTex - Landing" />
+            <!-- Honeypot antispam de Web3Forms: oculto para personas, los bots lo marcan -->
+            <input type="checkbox" name="botcheck" class="hidden" style="display: none;" tabindex="-1" autocomplete="off" />
+
             <div class="field">
               <label class="field__label" for="nombre">NOMBRE*</label>
               <input
@@ -171,12 +178,22 @@
         submitBtn.textContent = 'ENVIANDO…';
 
         try {
+          // Web3Forms espera JSON. Convertimos el FormData para no perder los
+          // campos ocultos (access_key, subject, from_name, botcheck).
+          var payload = JSON.stringify(Object.fromEntries(new FormData(form)));
           var res = await fetch(form.action, {
             method: 'POST',
-            headers: { Accept: 'application/json' },
-            body: new FormData(form),
+            headers: {
+              'Content-Type': 'application/json',
+              Accept: 'application/json',
+            },
+            body: payload,
           });
-          if (!res.ok) throw new Error('Formspree responded ' + res.status);
+          var data = await res.json();
+          // No basta con res.ok: Web3Forms puede responder 200 con success:false.
+          if (!res.ok || data.success !== true) {
+            throw new Error('Web3Forms: ' + (data.message || res.status));
+          }
           formView.hidden = true;
           successView.hidden = false;
         } catch (err) {
