@@ -136,7 +136,19 @@ Ejemplo:
 | Destinatario | `contacto@museotextildeantigua.com` |
 | Campos | Nombre, Apellido, Email |
 
-La cuenta es del museo, creada con `contacto@museotextildeantigua.com`.
+**Acceso al panel**
+
+| Detalle | Valor |
+|---------|-------|
+| Panel | https://app.web3forms.com |
+| Titular de la cuenta | El museo |
+| Usuario | `contacto@museotextildeantigua.com` |
+| Contraseña | **No se guarda aquí.** Ver abajo. |
+| Nombre del formulario | MuTex – Síguenos |
+
+> ⚠️ **Este repositorio es público.** Nunca escribir contraseñas, tokens ni claves privadas en este archivo ni en ningún otro del repo: quedarían publicadas en internet y, aunque se borren después, seguirían accesibles en el historial de git.
+>
+> La contraseña de esta cuenta va en el gestor de contraseñas del museo, o compartida por un canal seguro. La única credencial que sí vive en el código es la `access_key`, y es pública por diseño.
 
 Campos ocultos en el `<form>`:
 - `access_key` — identifica el formulario. Es **pública a propósito**: solo permite enviar a este formulario, no da acceso a nada más.
