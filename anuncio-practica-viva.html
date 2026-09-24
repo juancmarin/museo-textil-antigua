@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Un museo para una práctica viva — MuTex</title>
+  <meta
+    name="description"
+    content="Los huipiles, cortes y perrajes que entran a una colección museal siguen perteneciendo a una práctica viva que se desarrolla fuera del museo."
+  />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet"
+  />
+  <!-- ?v= es cache busting: sin el, el navegador se queda con un styles.css
+       viejo y los cambios no se ven. Subir el numero en todas las paginas cada
+       vez que se publique un cambio de estilos. -->
+  <link rel="stylesheet" href="styles.css?v=22" />
+</head>
+
+<!-- Copy tomado del diseno: Figma node 54:649 "BLOG".
+     Estructura y estilos: ver anuncio-nace-un-museo.html (la plantilla). -->
+<body class="page conoce articulo-page">
+  <main class="layout conoce__layout">
+    <!-- ============ Columna izquierda: motivo textil ============ -->
+    <aside class="visual" aria-hidden="true">
+      <img
+        class="visual__art"
+        src="assets/motivo-textil.gif"
+        alt=""
+        draggable="false"
+        oncontextmenu="return false"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      />
+      <svg class="visual__fallback" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" role="presentation">
+        <defs>
+          <pattern id="huipil" width="50" height="50" patternUnits="userSpaceOnUse">
+            <rect width="50" height="50" fill="transparent" />
+            <path d="M25 3 L47 25 L25 47 L3 25 Z" fill="#000" />
+            <path d="M25 14 L36 25 L25 36 L14 25 Z" fill="#e8e5d9" />
+            <rect x="22" y="22" width="6" height="6" fill="#000" />
+          </pattern>
+        </defs>
+        <rect width="300" height="300" fill="url(#huipil)" />
+      </svg>
+    </aside>
+
+    <!-- ============ Columna derecha: artículo con scroll ============ -->
+    <div class="conoce__right">
+      <div class="conoce__inner">
+        <article class="articulo">
+          <h1 class="articulo__title">Un museo para una práctica viva</h1>
+          <time class="articulo__date" datetime="2026-01-18">Ene 18, 2026</time>
+
+          <div class="articulo__body">
+            <h2 class="articulo__heading">Un museo para una práctica viva</h2>
+
+            <p class="articulo__text">
+              Los museos suelen trabajar con objetos que han sido separados de los contextos para
+              los que fueron creados. Una herramienta que hace tiempo dejó de hacer parte de las
+              actividades para las que fue fabricada, o una vasija que ya no se usa para contener
+              alimentos. No sucede así con los huipiles, cortes y perrajes que entran a una
+              colección museal. Estos textiles siguen perteneciendo a una práctica que se
+              desarrolla de manera cotidiana fuera del museo. Hay personas que los tejen y los
+              usan, los intercambian, los heredan y los venden. Los materiales con los que están
+              hechos y los diseños que en ellos se plasman están en constante transformación. En
+              ese sentido, las piezas textiles que conservamos en el MuTex forman parte de una
+              práctica viva, de una historia que aún no se termina.
+            </p>
+
+            <p class="articulo__text">
+              Esto no sucede solo con los textiles: muchos museos conservan objetos que hacen
+              parte de tradiciones vivas. Sin embargo, los textiles evidencian lo corta que es la
+              distancia entre el objeto musealizado y la vida social de la que procede. El mismo
+              tipo de huipil que alguien aprecia tras de una vitrina en el museo puede verlo
+              también en un mercado, o cubriendo a una mujer que camina por la calle.
+            </p>
+
+            <h2 class="articulo__heading">La prenda y el cuerpo</h2>
+
+            <p class="articulo__text">
+              Una de las primeras preguntas que enfrenta un museo de textiles guatemaltecos es muy
+              simple, pero no por ello es fácil de responder. ¿Cómo exhibir una prenda?
+            </p>
+
+            <p class="articulo__text">
+              Al revisar cómo otros museos han dado solución al problema de exhibir una prenda,
+              vemos que no hay una sola respuesta. Un huipil que se muestra extendido sobre una
+              superficie plana permite a los visitantes apreciar muy bien la estructura del
+              tejido, la complejidad de los brocados y la relación entre los distintos paneles que
+              lo componen. Una prenda puesta en un maniquí, por su parte, ayuda a mostrar la
+              relación entre la prenda y el cuerpo. Cada una de estas maneras de exhibir
+              transforma la manera en que el visitante comprende y experimenta la pieza.
+            </p>
+
+            <p class="articulo__text">
+              La literatura sobre exhibición de indumentaria ha dedicado muchas páginas a este
+              problema. Autoras como Lou Taylor y Valerie Steele han señalado que los maniquíes no
+              son soportes neutrales, pues introducen una determinada idea de cuerpo, con una
+              edad, unas proporciones, una postura y una apariencia específicas. Incluso cuando se
+              intentan utilizar maniquíes &ldquo;invisibles&rdquo; para dar protagonismo a la
+              prenda, un maniquí nunca desaparece por completo de la experiencia visual del
+              visitante. Determina cómo vemos la prenda y qué aspectos de ella percibimos como
+              importantes.
+            </p>
+
+            <p class="articulo__text">
+              Los textiles mayas hacen especialmente visible el papel que desempeña el cuerpo en
+              la construcción del significado de una prenda, porque gran parte de ese significado
+              surge de la relación con quienes la utilizan. Un huipil no existe únicamente como
+              objeto textil; existe también como prenda vestida. El movimiento de la tela, la
+              forma en que cae sobre el cuerpo, las marcas de uso, las reparaciones acumuladas con
+              el tiempo y las circunstancias en las que se utiliza forman parte de su historia.
+            </p>
+
+            <p class="articulo__text">
+              La museografía debe enfrentarse entonces a una dificultad que no tiene aún una
+              solución definitiva. Un huipil extendido permite observar aspectos que desaparecen
+              cuando se viste, mientras que un maniquí recupera parte de la dimensión corporal a
+              costa de introducir otra serie de problemas. Ninguna forma de exhibición consigue
+              mostrar simultáneamente todas las dimensiones del objeto. Esta dificultad no debe
+              entenderse como una limitación del museo, sino como una característica de los
+              propios textiles. Las prendas fueron concebidas para participar en la vida social y,
+              cuando ingresan a una colección, una parte de esa vida continúa siendo accesible
+              mientras otra queda necesariamente fuera del alcance de la exhibición.
+            </p>
+
+            <h2 class="articulo__heading">Entre arte y uso</h2>
+
+            <p class="articulo__text">
+              La pregunta por la exhibición nos lleva a otra discusión: ¿qué tipo de objeto es un
+              textil? Un mismo huipil puede aparecer en una exposición de arte contemporáneo, en
+              una muestra etnográfica, en una colección de diseño o en un museo dedicado a la
+              historia regional. En cada caso, el objeto permanece físicamente igual, pero cambia
+              el marco interpretativo que organiza la mirada.
+            </p>
+
+            <p class="articulo__text">
+              Esta discusión ocupa un lugar importante dentro de la historia de la curaduría
+              textil. Durante mucho tiempo, los textiles producidos fuera de Europa y Norteamérica
+              fueron exhibidos principalmente como objetos etnográficos, cuyo valor residía en la
+              información que parecían ofrecer sobre una comunidad o una cultura. En años
+              recientes, muchos museos han comenzado a destacar también sus cualidades estéticas,
+              técnicas y artísticas.
+            </p>
+
+            <p class="articulo__text">
+              Este desplazamiento ha generado debates importantes. Algunos investigadores han
+              señalado que la incorporación de textiles indígenas a circuitos artísticos puede
+              contribuir a reconocer capacidades creativas ignoradas durante mucho tiempo por las
+              instituciones culturales. Otros han advertido que una lectura exclusivamente
+              estética corre el riesgo de separar las piezas de las relaciones sociales que les
+              dieron origen. En el caso de los textiles mayas, es difícil observar la
+              sofisticación técnica de ciertos tejidos sin reconocer la creatividad y el
+              conocimiento que implican. Al mismo tiempo, reducirlos a objetos de contemplación
+              estética deja fuera aspectos fundamentales de su existencia social.
+            </p>
+
+            <p class="articulo__text">
+              La situación se vuelve aún más compleja cuando se recuerda que estas piezas
+              continúan utilizándose fuera del museo. Un huipil puede ser admirado por su
+              composición visual en una galería y regateado en un mercado; puede ser estudiado por
+              investigadores, heredado dentro de una familia, utilizado en una ceremonia o
+              incorporado a una colección privada. Ninguna de estas dimensiones agota el
+              significado del objeto, y si bien el museo no resuelve esta pluralidad de lecturas,
+              sí debe aprender a trabajar con ella.
+            </p>
+
+            <h2 class="articulo__heading">Más allá de la vitrina</h2>
+
+            <p class="articulo__text">
+              Las discusiones contemporáneas sobre patrimonio han transformado la manera en que
+              los museos piensan sus colecciones. Durante gran parte del siglo XX, la atención se
+              concentró principalmente en los objetos: reunirlos, conservarlos, clasificarlos y
+              exhibirlos. Con el tiempo, comenzó a reconocerse que muchas prácticas culturales no
+              podían comprenderse únicamente a través de los objetos que producían.
+            </p>
+
+            <p class="articulo__text">
+              Los textiles ofrecen un ejemplo especialmente claro. Una pieza terminada contiene
+              información valiosa sobre materiales, técnicas y diseños, pero una parte importante
+              de los conocimientos necesarios para producirla permanece fuera del objeto. Esos
+              conocimientos existen en los cuerpos que aprendieron a tejer, en las relaciones de
+              aprendizaje entre generaciones, en los espacios donde se transmiten técnicas y en
+              las decisiones que cada tejedora toma durante el proceso de elaboración.
+            </p>
+
+            <p class="articulo__text">
+              Por esta razón, muchos museos textiles han comenzado a complementar las colecciones
+              con otras formas de documentación e interpretación. Talleres de tejido, registros
+              audiovisuales, entrevistas, demostraciones técnicas, programas educativos y
+              colaboraciones con tejedoras permiten acercarse a dimensiones de la práctica textil
+              que no pueden conservarse dentro de una vitrina. Estas iniciativas parten del
+              aprendizaje de que ninguna colección puede contener completamente aquello que busca
+              representar.
+            </p>
+
+            <p class="articulo__text">
+              En el caso de los textiles mayas, la práctica y el tejido siguen transformándose.
+              Las tejedoras incorporan materiales nuevos, responden a mercados cambiantes,
+              recuperan técnicas antiguas y experimentan con otras posibilidades. Los textiles
+              conservados en un museo documentan momentos específicos de esta historia, pero la
+              historia misma sigue desarrollándose fuera de la institución. Quizá por ello los
+              textiles han ocupado un lugar importante en las discusiones recientes sobre
+              patrimonio vivo, pues obligan a reconocer que la conservación y la transformación no
+              son procesos opuestos. Una tradición permanece porque las personas que participan en
+              ella continúan reinterpretándola y adaptándola a circunstancias nuevas.
+            </p>
+
+            <p class="articulo__text">
+              Un museo de textiles mayas conserva objetos concretos producidos en momentos
+              concretos, pero también debe ofrecer herramientas para comprender las prácticas,
+              conocimientos y relaciones que hicieron posibles esos objetos y que continúan
+              existiendo más allá de las colecciones. Las piezas que exhibimos en el MuTex
+              pertenecen a esa historia, aunque no la contienen por completo. Afuera del museo,
+              los telares siguen funcionando, las prendas siguen circulando y los textiles
+              continúan acumulando nuevos usos, significados e historias.
+            </p>
+          </div>
+        </article>
+
+        <!-- Menu anclado. "Anuncios" activo porque el detalle pertenece a esa
+             seccion, pero sin aria-current: el enlace lleva a otra pagina. -->
+        <div class="masthead masthead--sticky">
+          <a href="index.html" aria-label="Inicio MuTex">
+            <img class="masthead__logo" src="assets/monograma.svg" alt="MuTex" />
+          </a>
+          <nav class="nav nav--stacked" aria-label="Navegación principal">
+            <a class="nav__link" href="conocenos.html">Conócenos</a>
+            <a class="nav__link" href="siguenos.html">Síguenos</a>
+            <a class="nav__link nav__link--active" href="anuncios.html">Anuncios</a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- El footer vive dentro de la columna con scroll -->
+      <footer class="footer">
+        <ul class="social" aria-label="Redes sociales">
+          <li><a class="social__link" href="https://www.instagram.com/museotextildeantigua" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a></li>
+          <li><a class="social__link" href="https://www.facebook.com/profile.php?id=61590506050135" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.3-1.5 1.6-1.5H17V4.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.1V10.5H8v3h2.5V21h3Z"/></svg></a></li>
+          <li><a class="social__link" href="mailto:contacto@museotextildeantigua.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" stroke-linejoin="round"/></svg></a></li>
+        </ul>
+        <p class="footer__legal">Antigua, Guatemala<br />© 2026 MuTex</p>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>

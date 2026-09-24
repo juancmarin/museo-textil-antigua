@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nace un museo — MuTex</title>
+  <meta
+    name="description"
+    content="Por qué Antigua necesita un lugar para aprender a mirar sus textiles."
+  />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet"
+  />
+  <!-- ?v= es cache busting: sin el, el navegador se queda con un styles.css
+       viejo y los cambios no se ven. Subir el numero en todas las paginas cada
+       vez que se publique un cambio de estilos. -->
+  <link rel="stylesheet" href="styles.css?v=22" />
+</head>
+
+<!-- Plantilla de detalle de anuncio. Para publicar otra entrada, duplicar
+     este archivo, cambiar <title>, la descripción y el contenido de
+     <article class="articulo">, y enlazarlo desde anuncios.html.
+     La clase "conoce" aporta el layout compartido (motivo fijo + columna con
+     scroll + menú anclado) y la paleta azul.
+
+     Copy tomado del diseno: Figma, archivo "Landing page - MUTEX (I)",
+     node 2717:433 "BLOG". -->
+<body class="page conoce articulo-page">
+  <main class="layout conoce__layout">
+    <!-- ============ Columna izquierda: motivo textil ============ -->
+    <aside class="visual" aria-hidden="true">
+      <img
+        class="visual__art"
+        src="assets/motivo-textil.gif"
+        alt=""
+        draggable="false"
+        oncontextmenu="return false"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      />
+      <svg class="visual__fallback" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" role="presentation">
+        <defs>
+          <pattern id="huipil" width="50" height="50" patternUnits="userSpaceOnUse">
+            <rect width="50" height="50" fill="transparent" />
+            <path d="M25 3 L47 25 L25 47 L3 25 Z" fill="#000" />
+            <path d="M25 14 L36 25 L25 36 L14 25 Z" fill="#e8e5d9" />
+            <rect x="22" y="22" width="6" height="6" fill="#000" />
+          </pattern>
+        </defs>
+        <rect width="300" height="300" fill="url(#huipil)" />
+      </svg>
+    </aside>
+
+    <!-- ============ Columna derecha: artículo con scroll ============ -->
+    <div class="conoce__right">
+      <div class="conoce__inner">
+        <article class="articulo">
+          <h1 class="articulo__title">Nace un museo</h1>
+          <time class="articulo__date" datetime="2026-09-18">Sep 18, 2026</time>
+
+          <div class="articulo__body">
+            <p class="articulo__standfirst">
+              Por qué Antigua necesita un lugar para aprender a mirar sus textiles
+            </p>
+
+            <p class="articulo__text">
+              Resulta un poco extraño escribir sobre un museo que todavía no existe del todo. Por
+              lo general, los museos se anuncian cuando ya están listos, con las paredes ya
+              pintadas, las vitrinas instaladas, y las puertas a punto de abrirse. Pero nosotros
+              queremos darles la bienvenida al Museo Textil de Antigua &ndash;el MuTex&ndash;
+              mucho antes, cuando todavía tenemos los andamios puestos. Esta primera entrada de
+              nuestro blog no es entonces para invitarte a visitar el museo (aún no puedes); es
+              para invitarte a acompañar el proceso y a ser testigo de la construcción de lo que
+              falta.
+            </p>
+
+            <h2 class="articulo__heading">Cuando algo está en todas partes</h2>
+
+            <p class="articulo__text">
+              Antigua es una ciudad que te obliga a caminar despacio. Las calles empedradas
+              regulan el paso mejor que cualquier señal de tránsito. A medida que recorres la
+              ciudad, vas registrando todo aquello que la hace única: los volcanes que se asoman
+              como un monumento al fondo de las calles, las fachadas gastadas por siglos de uso,
+              los patios escondidos tras portones imponentes de madera. Y, en todas partes, los
+              textiles. Están en los mercados, los hoteles, los restaurantes, los escaparates, en
+              las fotos que se llevan los visitantes. Aparecen sobre las mesas como manteles,
+              enmarcados en paredes, recortados en bolsos, cojines y piezas de ropa. Antes de
+              empezar siquiera a entender qué son esos coloridos textiles, ya los has visto
+              decenas de veces en todas partes. La pregunta es si has tenido la oportunidad de
+              mirarlos de verdad.
+            </p>
+
+            <p class="articulo__text">
+              La antropología estudia desde hace tiempo un fenómeno curioso: cuando hay algo en
+              todas partes, tendemos a prestarle poca atención. A medida que se vuelve
+              &ldquo;paisaje&rdquo;, ignoramos aquello que abunda. Pasa con los edificios de una
+              ciudad, con las montañas que enmarcan los valles andinos, con los ruidos cotidianos
+              de un barrio. Y pasa, también, con los textiles en Antigua.
+            </p>
+
+            <p class="articulo__text">
+              Sucede algo paradójico, y es que al tiempo que admiramos los colores y nos detenemos
+              ante la belleza de los textiles, pocas veces nos preguntamos qué es exactamente lo
+              que tenemos delante. Así, el tejido queda reducido a un objeto colorido y decorativo
+              y su valor como forma de conocimiento &mdash;como archivo, como documento&mdash;
+              pasa inadvertido.
+            </p>
+
+            <p class="articulo__text">
+              Y, sin embargo, los textiles mayas son una de las tradiciones intelectuales y
+              técnicas más sofisticadas de Guatemala. Durante siglos, generaciones de tejedoras
+              han ido afinando sistemas complejos de diseño, teñido, simbolización y transmisión
+              de saberes en torno al telar de cintura, una tecnología que sigue viva en muchas
+              comunidades del país. Visto de cerca, un textil guarda una cantidad significativa de
+              información sobre un lugar, una comunidad, una historia familiar o una manera
+              particular de entender el mundo. El problema es que la mayoría no sabemos leerlo.
+            </p>
+
+            <h2 class="articulo__heading">Un idioma que pocos aprendimos</h2>
+
+            <p class="articulo__text">
+              Imagina oír una conversación en una lengua que no conoces. Reconoces algunos
+              sonidos, ritmos, entonaciones; intuyes que algo importante se está diciendo, pero no
+              sabes qué exactamente.
+            </p>
+
+            <p class="articulo__text">
+              Con los textiles ocurre algo parecido. Para quien los conoce, ciertas combinaciones
+              de colores, figuras y técnicas son pistas sobre el origen de la pieza. Hay
+              comunidades con repertorios visuales tan distintivos que una tejedora los puede
+              reconocer sin esfuerzo. Las diferencias entre un huipil de San Antonio Aguas
+              Calientes y uno de Santiago Atitlán pueden parecerle sutiles a un visitante, pero
+              para un ojo experto contienen información cultural muy precisa.
+            </p>
+
+            <p class="articulo__text">
+              Lo mismo pasa con los materiales. Quien conoce el oficio de teñir y tejer puede
+              distinguir un hilo industrial de uno teñido con pigmentos naturales y reconoce, por
+              ejemplo, el uso de la cochinilla para lograr rojos intensos, con todo el trabajo
+              extra que eso supone. Donde alguien sin formación ve apenas un color llamativo, el
+              ojo entrenado lee el tiempo invertido y el conocimiento acumulado.
+            </p>
+
+            <p class="articulo__text">
+              Entre mirar una pieza y comprenderla hay una distancia considerable; acortarla es la
+              razón de ser del MuTex.
+            </p>
+
+            <h2 class="articulo__heading">Lo que desaparece cuando se borra el contexto</h2>
+
+            <p class="articulo__text">
+              Muchas piezas llegan a Antigua después de pasar por varias manos, y en el camino
+              pierden buena parte de lo que les daba contexto: el nombre de la tejedora que lo
+              hizo se desdibuja, el lugar de origen se vuelve incierto, y las técnicas dejan de
+              registrarse. El textil permanece, mientras la información que permite entenderlo se
+              va desvanenciendo de mano en mano.
+            </p>
+
+            <p class="articulo__text">
+              Esto no es algo exclusivo de Guatemala. En muchas partes del mundo, los objetos
+              culturales circulan más rápido que las historias que los originaron. Compramos una
+              pieza y admiramos su acabado, pero solemos ignorar en qué condiciones se hizo, qué
+              decisiones técnicas tomó quien la creó y las relaciones sociales que hicieron
+              posible su existencia. Así, terminamos valorando el objeto por su apariencia más que
+              por lo que es capaz de contar.
+            </p>
+
+            <h2 class="articulo__heading">Entonces, ¿por qué un museo textil?</h2>
+
+            <p class="articulo__text">
+              Porque algunos objetos necesitan tiempo. Tiempo para mirarlos, para hacerles
+              preguntas &mdash;a ellos y a sus creadoras&mdash; y para descubrir que bajo una
+              superficie aparentemente familiar hay una complejidad que no habíamos notado.
+            </p>
+
+            <p class="articulo__text">
+              El MuTex nace para que más personas aprendan a leer los textiles guatemaltecos. Lo
+              pensamos como un lugar donde el tejido se entienda como una práctica viva y no como
+              una reliquia del pasado, donde se puedan conocer de cerca los procesos, los
+              materiales, las técnicas y las trayectorias de quienes tejen, y donde la experiencia
+              de las tejedoras sea tan importante como las piezas. Queremos despertar tu
+              curiosidad para que aprendas a preguntarle al textil por aquello que guarda.
+            </p>
+
+            <h2 class="articulo__heading">El museo que estamos construyendo</h2>
+
+            <p class="articulo__text">
+              Todavía falta mucho por terminar. Seguimos teniendo conversaciones con tejedoras,
+              estudiosas del tejido, con otros museos y colaboradores. Nos guía una convicción, y
+              es que los textiles guatemaltecos merecen espacios donde se los aprecie y conozca
+              con la misma atención que damos a otras formas de arte y de conocimiento. Por eso,
+              queremos compartir el proceso de construcción del MuTex desde ahora, meses antes de
+              su apertura. En las próximas semanas te estaremos contando cómo vamos avanzando, qué
+              preguntas van apareciendo y las personas que lo están construyendo. Cuando por fin
+              abramos, esperamos que encuentres algo más que un museo terminado: un lugar cuya
+              historia ya conoces.
+            </p>
+          </div>
+        </article>
+
+        <!-- Menu anclado: se queda fijo mientras el articulo hace scroll.
+             "Anuncios" va marcado como activo porque el detalle pertenece a
+             esa seccion, pero sin aria-current: el enlace lleva a otra pagina. -->
+        <div class="masthead masthead--sticky">
+          <a href="index.html" aria-label="Inicio MuTex">
+            <img class="masthead__logo" src="assets/monograma.svg" alt="MuTex" />
+          </a>
+          <nav class="nav nav--stacked" aria-label="Navegación principal">
+            <a class="nav__link" href="conocenos.html">Conócenos</a>
+            <a class="nav__link" href="siguenos.html">Síguenos</a>
+            <a class="nav__link nav__link--active" href="anuncios.html">Anuncios</a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- El footer vive dentro de la columna con scroll -->
+      <footer class="footer">
+        <ul class="social" aria-label="Redes sociales">
+          <li><a class="social__link" href="https://www.instagram.com/museotextildeantigua" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a></li>
+          <li><a class="social__link" href="https://www.facebook.com/profile.php?id=61590506050135" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.3-1.5 1.6-1.5H17V4.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.1V10.5H8v3h2.5V21h3Z"/></svg></a></li>
+          <li><a class="social__link" href="mailto:contacto@museotextildeantigua.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" stroke-linejoin="round"/></svg></a></li>
+        </ul>
+        <p class="footer__legal">Antigua, Guatemala<br />© 2026 MuTex</p>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>

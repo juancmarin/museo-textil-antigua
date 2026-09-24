@@ -18,81 +18,152 @@
     href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css" />
+  <!-- ?v= es cache busting: sin el, el navegador se queda con un styles.css
+       viejo y los cambios no se ven. Subir el numero en las 5 paginas cada
+       vez que se publique un cambio de estilos. -->
+  <link rel="stylesheet" href="styles.css?v=22" />
 </head>
 
 <body class="page conoce">
-  <!-- ============ Barra superior ============ -->
-  <header class="topbar" data-anim data-anim-delay="50">
-    <a href="index.html" aria-label="Inicio MuTex">
+  <main class="layout conoce__layout">
+    <!-- ============ Columna izquierda: motivo textil (igual que el Home) ============ -->
+    <aside class="visual" aria-hidden="true">
       <img
-        class="topbar__logo"
-        src="assets/logo-mutex-siguenos.svg"
-        alt="MuTex"
+        class="visual__art"
+        src="assets/motivo-textil.gif"
+        alt=""
+        draggable="false"
+        oncontextmenu="return false"
         onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
       />
-      <span class="topbar__logo-fallback" aria-hidden="true">MU<br />TEX</span>
-    </a>
-    <nav class="topbar__nav" aria-label="Navegación principal">
-      <a class="nav__link nav__link--active" href="conocenos.html" aria-current="page">Conócenos</a>
-      <a class="nav__link" href="siguenos.html">Síguenos</a>
-    </nav>
-  </header>
+      <svg class="visual__fallback" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" role="presentation">
+        <defs>
+          <pattern id="huipil" width="50" height="50" patternUnits="userSpaceOnUse">
+            <rect width="50" height="50" fill="transparent" />
+            <path d="M25 3 L47 25 L25 47 L3 25 Z" fill="#000" />
+            <path d="M25 14 L36 25 L25 36 L14 25 Z" fill="#e8e5d9" />
+            <rect x="22" y="22" width="6" height="6" fill="#000" />
+          </pattern>
+        </defs>
+        <rect width="300" height="300" fill="url(#huipil)" />
+      </svg>
+    </aside>
 
-  <!-- ============ Contenido ============ -->
-  <main class="conoce__main">
-    <!-- Intro: texto a la izquierda, patrón ancho arriba a la derecha -->
-    <section class="conoce__intro">
-      <div class="conoce__intro-text">
-        <h1 class="display-title" data-glyphify data-anim data-anim-eager data-anim-delay="100">Bienvenidxs<br>al MuTex</h1>
-        <p class="lead" data-anim data-anim-eager data-anim-delay="220">
-          El Museo Textil de Antigua abrirá sus puertas en el último trimestre del 2026
-        </p>
-        <p class="body-text" data-anim data-anim-eager data-anim-delay="340">
-          El MuTex será un lugar para aprender a ver las artes textiles de los pueblos indígenas
-          de Guatemala como parte integral de sus sistemas de conocimiento.
-        </p>
+    <!-- ============ Columna derecha: unico contenedor con scroll ============ -->
+    <div class="conoce__right">
+      <div class="conoce__inner">
+      <div class="conoce__content">
+        <section class="conoce__section">
+          <h1 class="display-title" data-glyphify data-anim data-anim-eager data-anim-delay="100">Bienvenidos<br>al MuTex</h1>
+          <!-- Los <br> parten el subtitulo en tres lineas, con el mismo corte
+               que el de la seccion "Una mirada para comprender". -->
+          <p class="lead" data-anim data-anim-eager data-anim-delay="220">
+            El Museo Textil de Antigua<br>abrirá sus puertas en<br>enero de 2027
+          </p>
+          <div class="conoce__prose" data-anim data-anim-eager data-anim-delay="340">
+            <p class="body-text">
+              El Museo Textil de Antigua es un espacio cultural para el aprendizaje activo,
+              colaborativo e inclusivo de las artes textiles de los pueblos indígenas de
+              Guatemala.
+            </p>
+            <p class="body-text">
+              MuTex dialoga permanentemente con su reflexión fundacional: Los textiles de los
+              pueblos indígenas de Guatemala son custodios de sus sistemas de conocimientos, sus
+              memorias históricas y son testigos de sus resistencias contemporánea.
+            </p>
+            <p class="body-text">
+              En nuestras exposiciones y actividades, los textiles se presentan como elementos de
+              creación colectiva. Formas vivas y dinámicas de comunicar conocimiento, ternura,
+              memoria, resistencia política y esperanza en la construcción de futuros de bienestar
+              para las mujeres y los pueblos indígenas.
+            </p>
+            <p class="body-text">
+              Cada textil hace visible un diálogo entre generaciones. En él convergen técnicas,
+              creatividad, memorias y emociones que se transmiten y transforman con quienes lo
+              crean, lo tejen y lo usan (en local y lo global).
+            </p>
+          </div>
+        </section>
+
+        <section class="conoce__section">
+          <h2 class="display-title" data-glyphify data-anim>Una mirada<br>para comprender</h2>
+          <!-- El <br> parte el subtitulo en dos lineas como pide el diseno. -->
+          <p class="lead" data-anim>
+            Contemplar es el inicio<br>del aprehender
+          </p>
+          <div class="conoce__prose" data-anim>
+            <p class="body-text">
+              En MuTex, los textiles comunican conocimientos, memorias, emociones y resistencias
+              históricas de distintos pueblos indígenas de Guatemala. El museo invita a la
+              contemplación la escucha contemplar, escuchar y acercarse a las voces y perspectivas
+              de las mujeres y los hombres que crean y usan textiles como su segunda piel (Paula
+              Nicho, 2004).
+            </p>
+            <p class="body-text">
+              En el MuTex las exposiciones son multisensoriales para que puedan ser apreciadas por
+              personas de todas las edades. Diseñadas para invitar a visitantes locales y
+              extranjeros conocer y profundizar sobre las técnicas textiles de los pueblos
+              indígenas en Guatemala, su simbología, patrones, materiales, colores y las dinámicas
+              históricas y contemporáneas que los hacen una historia viva.
+            </p>
+          </div>
+        </section>
+
+        <section class="conoce__section">
+          <h2 class="display-title" data-glyphify data-anim>Colaboraciones<br>con las<br>comunidades<br>indígenas</h2>
+          <div class="conoce__prose" data-anim>
+            <p class="body-text">
+              El Museo Textil de Antigua es un espacio de construcción y participación colectiva,
+              en el que las miradas y voces de las comunidades que han portado el conocimiento del
+              arte de tejer, son los protagonistas.
+            </p>
+            <p class="body-text">
+              Este museo es un proyecto que conecta personas, arte, memoria, tradición y
+              realidades diversas a través de la aproximación a los sistemas de conocimientos de
+              los pueblos encarnados en sus tejidos.
+            </p>
+            <p class="body-text">
+              Conectamos con las tejedoras y tejedores, creadores de la historia viva en cada
+              territorio con el que colaboramos.
+            </p>
+            <p class="body-text">
+              Tejer relaciones con pertinencia cultural y respetuosas de la vitalidad endógena de
+              los textiles, es un ejercicio dialógico que alimentamos permanentemente en cada
+              acercamiento. Visitar, dialogar, escuchar y respetar el consentimiento de los
+              colaboradores locales, es un principio ético de la curaduría compartida que
+              cultivamos. En el MuTex buscamos que cada elemento que forma parte de una colección
+              o una exposición, sea un agente de la enunciación, la creatividad, la vigencia del
+              ser, de la memoria, del alma de la persona, familia o comunidad al que pertenece
+              -una ontología política- (Mario Blaser).
+            </p>
+          </div>
+        </section>
       </div>
-      <img class="conoce__pattern conoce__pattern--top" src="assets/patron_conocenos_1.svg" alt="" aria-hidden="true" data-anim="reveal" data-anim-eager data-anim-delay="600" />
-    </section>
 
-    <!-- Patrón abajo a la izquierda + dos columnas de texto -->
-    <section class="conoce__cols">
-      <img class="conoce__pattern conoce__pattern--bottom" src="assets/patron_conocenos_2.svg" alt="" aria-hidden="true" data-anim="reveal" data-anim-eager data-anim-delay="1200" />
-
-      <div class="conoce__col" data-anim data-anim-eager data-anim-delay="1850">
-        <h2 class="display-title" data-glyphify>Una mirada<br>diferente</h2>
-        <p class="lead">La belleza está en<br>el significado</p>
-        <p class="body-text">
-          En el MuTex encontrarás exposiciones, talleres prácticos y experiencias multisensoriales
-          para todas las edades, pensadas para que visitantes y viajeros de todo el mundo descubran
-          y aprendan a decodificar la riqueza técnica, simbólica e histórica tejida en cada hilo,
-          color y patrón de las artes textiles de los pueblos indígenas de Guatemala.
-        </p>
+      <!-- Menu anclado: se queda fijo mientras el contenido hace scroll -->
+      <div class="masthead masthead--sticky">
+        <a href="index.html" aria-label="Inicio MuTex">
+          <img class="masthead__logo" src="assets/monograma.svg" alt="MuTex" />
+        </a>
+        <nav class="nav nav--stacked" aria-label="Navegación principal">
+          <a class="nav__link nav__link--active" href="conocenos.html" aria-current="page">Conócenos</a>
+          <a class="nav__link" href="siguenos.html">Síguenos</a>
+          <a class="nav__link" href="anuncios.html">Anuncios</a>
+        </nav>
+      </div>
       </div>
 
-      <div class="conoce__col" data-anim data-anim-eager data-anim-delay="2050">
-        <h2 class="display-title" data-glyphify>De la mano de<br>las comunidades<br>portadoras</h2>
-        <p class="lead">Nos esforzamos por contar<br>historias completas</p>
-        <p class="body-text">
-          Las artes textiles guatemaltecas habitan un mundo complejo, que queremos comunicar y hacer
-          visible: las técnicas y saberes antiguos conviven con las innovaciones más recientes; la
-          belleza de los textiles no se traduce en una valoración económica justa; la tradición va
-          acompañada de la transformación.
-        </p>
-      </div>
-    </section>
-  </main>
-
-  <!-- ============ Footer ============ -->
-  <footer class="footer" data-anim data-anim-eager data-anim-delay="2200">
+      <!-- El footer vive dentro de la columna con scroll -->
+      <footer class="footer">
     <ul class="social" aria-label="Redes sociales">
-      <li><a class="social__link" href="https://www.instagram.com/museotextilantigua" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a></li>
-      <li><a class="social__link" href="https://www.facebook.com/profile.php?id=61590683252544" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.3-1.5 1.6-1.5H17V4.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.1V10.5H8v3h2.5V21h3Z"/></svg></a></li>
+      <li><a class="social__link" href="https://www.instagram.com/museotextildeantigua" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a></li>
+      <li><a class="social__link" href="https://www.facebook.com/profile.php?id=61590506050135" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.3-1.5 1.6-1.5H17V4.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.1V10.5H8v3h2.5V21h3Z"/></svg></a></li>
       <li><a class="social__link" href="mailto:contacto@museotextildeantigua.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" stroke-linejoin="round"/></svg></a></li>
     </ul>
-    <p class="footer__legal">Antigua, Guatemala<br />© 2026 MuTex</p>
-  </footer>
+      <p class="footer__legal">Antigua, Guatemala<br />© 2026 MuTex</p>
+      </footer>
+    </div>
+  </main>
   <script defer src="assets/anim.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/opentype.js@1.3.4/dist/opentype.min.js"></script>
   <script defer src="assets/glyphify.js"></script>

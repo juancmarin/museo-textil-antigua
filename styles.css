@@ -93,6 +93,15 @@
   --cream-light: #f1eee4;
   --black: #000000;
   --orange: #ff6927;
+  /* Azul-gris de marca: wordmark del Home y fondo del motivo textil */
+  --azul: #849cae;
+  /* Azul de las etiquetas de la tarjeta de anuncios (Figma 57:1742).
+     OJO: es un tono distinto de --azul, no unificarlos sin consultar. */
+  --azul-label: #718e9e;
+  /* Azul del formulario de Síguenos. Tercer tono de azul del sitio: los tres
+     son distintos a propósito según los diseños entregados. */
+  --azul-form: #86a6b7;
+  --card-bg: #f8f7f1;
 
   /* Cambiar a 'Federico Parra' cuando exista licencia (ver bloque de arriba) */
   --font-display: 'Exposure', 'Zilla Slab', Georgia, serif;
@@ -149,7 +158,8 @@ a {
 /* ---------- Columna izquierda: motivo textil ---------- */
 .visual {
   position: relative;
-  background: var(--cream);
+  /* El GIF del motivo tiene fondo transparente: este color se ve a través. */
+  background: var(--azul);
   overflow: hidden;
 }
 
@@ -202,13 +212,36 @@ a {
   text-decoration: none;
 }
 
-/* Nav apilado, alineado a la derecha (pantalla de inicio / hero) */
+/* Bloque de cabecera del Home: monograma sobre el nav, ambos centrados
+   entre si. width: fit-content + margin-left: auto lo mantiene a la derecha
+   de la columna sin que los enlaces se peguen al borde. */
+.masthead {
+  display: flex;
+  flex-direction: column;
+  /* Monograma y enlaces al ras por la derecha. En móvil el masthead es una
+     fila y vuelve a align-items: center, que ahí significa centrado vertical. */
+  align-items: flex-end;
+  gap: 1.5rem;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: -1.8vw;
+}
+
+.masthead__logo {
+  width: 46px;
+  height: auto;
+}
+
+/* Nav apilado bajo el monograma. Los enlaces van alineados a la derecha:
+   como el bloque mide lo que mide "Conócenos", el más largo, con
+   align-items: center los otros dos quedaban descuadrados hacia dentro.
+   El monograma sigue centrado (eso lo controla .masthead, no esta regla).
+   En móvil el nav es una fila y vuelve a align-items: center. */
 .nav--stacked {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.9rem;
-  margin-right: -1.8vw;
+  gap: 1.3rem;
 }
 
 /* Nav en línea (pantalla Síguenos): activo a la izquierda, link a la derecha */
@@ -245,6 +278,37 @@ a {
   align-items: center;
   text-align: center;
   margin: 0 auto;
+}
+
+/* El bloque del Home (wordmark + titular + tarjeta) sube para quedar justo
+   debajo del menú. El bloque no tiene holgura interna —su alto es exactamente
+   el contenido más su padding—, así que el único espacio disponible está
+   encima: sus 32px de padding superior y los 40px de la columna.
+   Se dejan 20px de aire bajo el menú y 16px arriba de la columna.
+
+   OJO: va en un @media min-width y acotado a .hero por dos razones. Acotado a
+   .hero para no mover Síguenos, que comparte .content. Y dentro del media
+   query porque ".hero .content__body--center" tiene más especificidad que la
+   regla móvil ".content__body--center": sin el media query ganaría también en
+   móvil y rompería el padding del Figma móvil. */
+@media (min-width: 769px) {
+  /* OJO: el Home NO toca el padding superior de .content. Ese padding es lo
+     que fija la altura del menú (top: 40px), y debe ser idéntico en todas las
+     páginas. Para subir el bloque se usa solo el margen negativo de abajo. */
+  .hero .content__body--center {
+    /* El bloque sube metiéndose en la franja del menú. Son los 100px que se
+       pidieron más los 32px del padding de la columna, que antes se le
+       restaban a .content y descuadraban el menú respecto a Conócenos. */
+    margin-top: -132px;
+    padding-top: 0.75rem;
+    /* (Síguenos lleva el mismo -100px más abajo, en .form-page .content__body) */
+    /* La clave en pantallas altas: .content__body tiene flex: 1, así que crece
+       y le sobran hasta 160px por dentro; con justify-content: center el
+       bloque quedaba hundido a la mitad de esa holgura. Anclado arriba, el
+       sobrante se va todo abajo. En pantallas bajas no hay holgura y esta
+       línea no cambia nada. */
+    justify-content: flex-start;
+  }
 }
 
 /* ---------- Wordmark ---------- */
@@ -349,7 +413,7 @@ a {
 
 .field {
   position: relative;
-  border: 1px solid #FF6927;
+  border: 1px solid var(--orange);
   border-radius: 12px;
   padding: 0.55rem 0.9rem 0.45rem;
   background: transparent;
@@ -457,7 +521,9 @@ a {
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: var(--orange);
+  /* Los SVG usan fill/stroke: currentColor, así que este color los pinta.
+     Crema sobre la barra negra del footer, igual en escritorio y móvil. */
+  color: var(--cream);
   transition: opacity 0.15s ease;
 }
 
@@ -480,15 +546,55 @@ a {
   text-align: right;
 }
 
+/* Footer fijo en escritorio (Home y Síguenos, las dos páginas con .content).
+   Conócenos, Anuncios y los detalles ya lo tienen pegado al fondo de su
+   columna con scroll, así que no entran aquí.
+
+   El left: 56% replica la columna derecha del grid (.layout es 56% / 44%);
+   si ese reparto cambia, hay que cambiarlo aquí también.
+
+   Al salir del flujo deja de ocupar alto, así que el contenido se le metería
+   por debajo: por eso .content__body suma --footer-h a su padding inferior.
+
+   OJO: el @media min-width es obligatorio. ".hero .footer" tiene más
+   especificidad que la regla móvil ".footer", así que sin él el footer
+   quedaría fijo también en móvil, donde debe fluir con la página. */
+@media (min-width: 769px) {
+  .hero,
+  .form-page {
+    --footer-h: 68px;
+  }
+
+  .hero .footer,
+  .form-page .footer {
+    position: fixed;
+    left: 56%;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    z-index: 3;
+  }
+
+  .hero .content__body,
+  .form-page .content__body {
+    padding-bottom: calc(2rem + var(--footer-h));
+  }
+
+  /* Síguenos sube 100px igual que el Home. El logo, el titular, el subtítulo
+     y el formulario son todos hijos de .content__body, así que suben juntos. */
+  .form-page .content__body {
+    margin-top: -100px;
+  }
+}
+
 /* =========================================================================
    PÁGINA CONÓCENOS (contenido de ancho completo)
    ========================================================================= */
+/* OJO: nada de overflow-x aquí. Convertía al <body> en contenedor de scroll
+   y eso rompe el position: sticky del motivo y del menú. */
 .conoce {
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow-x: hidden;
 }
 
 /* Barra superior: logo a la izquierda + nav */
@@ -619,13 +725,22 @@ a {
 .display-title {
   font-family: 'MTA Doble', var(--font-mosaic);
   font-weight: 400;
-  font-size: clamp(1.8rem, 2.55vw, 2.29rem);
+  /* El mínimo es 1.4rem y no 1.8rem para que en ventanas angostas (900-1100px)
+     el título más largo siga cabiendo en la columna a escala 1. Con 1.8rem se
+     pasaba de ancho y el SVG se reducía, quedando más pequeño que los demás. */
+  font-size: clamp(1.4rem, 2.55vw, 2.29rem);
   line-height: 1;
   letter-spacing: 0;
   text-transform: uppercase;
   color: var(--orange);
   margin: 0 0 0.9rem;
-  max-width: 16rem;
+  /* OJO: nada de max-width aquí. glyphify convierte cada título en un SVG del
+     ancho que necesite su línea más larga, y ese SVG lleva max-width: 100%.
+     Con el tope de 16rem (256px) los títulos largos se escalaban para caber
+     —"De la mano de las comunidades portadoras" quedaba al 78%— y los cortos
+     no, así que el mosaico salía de distinto tamaño en cada sección.
+     Sin tope, el límite lo pone la columna y todos renderizan a escala 1.
+     En móvil ya estaba en none. */
 }
 
 /* Título de bienvenida: 40px a 1440px (Figma node 1:398) */
@@ -667,13 +782,46 @@ a {
     display: contents;
   }
 
-  .nav--stacked {
+  /* El masthead ocupa una sola celda del grid. En móvil va en una sola fila:
+     monograma a la izquierda y los tres enlaces seguidos a continuación, sin
+     estirarse hasta el borde derecho (así está en el diseño). */
+  .masthead {
     order: 1;
     flex-direction: row;
-    justify-content: space-between;
-    gap: 1.5rem;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
     margin: 0;
-    padding: 32px 27px;
+    padding: 20px 27px;
+    gap: 2rem;
+    /* Válvula de escape para pantallas de menos de ~365px: antes que aplastar
+       el monograma, el nav baja a una segunda línea. */
+    flex-wrap: wrap;
+    row-gap: 1rem;
+  }
+
+  /* OJO: en todas las páginas menos el Home el monograma va envuelto en un
+     <a>, y es ese <a> el flex item. Sin flex: 0 0 auto se encogía a 0 de
+     ancho (y el <img>, con max-width: 100%, desaparecía con él). */
+  .masthead > a,
+  .masthead__logo {
+    flex: 0 0 auto;
+  }
+
+  .masthead__logo {
+    width: 30px;
+  }
+
+  /* OJO: nada de justify-content: space-between ni width: 100% aquí. Eso
+     empujaba "Anuncios" contra el borde derecho y separaba los enlaces. */
+  .nav--stacked {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1.6rem;
+    width: auto;
+    margin: 0;
+    padding: 0;
   }
 
   /* Síguenos móvil: topbar con logo + nav (Síguenos activo, Conócenos) */
@@ -706,15 +854,12 @@ a {
 
   .nav__link {
     font-variation-settings: 'EXPO' -50;
+    font-size: 0.875rem;
   }
 
-  .form-page .nav__link {
-    font-size: 16px;
-  }
-
-  .form-page .nav__link--active {
-    font-size: 14px;
-  }
+  /* Síguenos usa el mismo .masthead que el resto, así que no lleva tamaños
+     propios: los antiguos (16px / 14px del activo) eran del topbar
+     .nav--inline que ya no se usa y desalineaban la fila. */
 
   .content__body,
   .content__body--center {
@@ -730,6 +875,7 @@ a {
     padding: 68px 61px 67px 60px;
     gap: 42px;
   }
+
 
   /* Síguenos móvil: contenedor a 302px, nombre+apellido en una fila,
      email y botón a ancho completo. */
@@ -800,7 +946,8 @@ a {
   }
 
   .footer__legal {
-    color: #fff;
+    /* Crema, no blanco puro: mismo color que los íconos y que el escritorio. */
+    color: var(--cream);
     font-size: 10px;
     line-height: 12.46px;
     font-weight: 400;
@@ -1074,5 +1221,576 @@ a {
     animation-name: anim-pop;
     animation-duration: 0.7s;
     animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* -------------------------------------------------------------------------
+   MONOGRAMA DEL HOME
+   Reutiliza assets/favicon.svg, que ya es el mosaico "M" en negro.
+   ------------------------------------------------------------------------- */
+.topmark {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.topmark__logo {
+  width: 42px;
+  height: auto;
+  display: block;
+}
+
+/* -------------------------------------------------------------------------
+   TARJETA DE ANUNCIOS RECIENTES
+   Diseño: Figma node 57:1742 "Card / Anuncios recientes".
+   Los valores del eje EXPO vienen del diseño, no son estimaciones:
+   -40 para las etiquetas azules, -10 para fecha y antetítulo, 0 para el resto.
+   ------------------------------------------------------------------------- */
+.anuncio-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 10px 16px 16px;
+  background: var(--card-bg);
+  border-radius: 26px;
+  overflow: hidden;
+  width: 100%;
+  max-width: 22rem;
+  margin-top: 2.5rem;
+  font-family: var(--font-body);
+  /* El contenedor del hero centra el texto; la tarjeta va alineada a la izquierda. */
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+/* La tarjeta entera es el CTA, igual que las de Anuncios (.anuncio-item).
+   En vez de envolverla en un <a> —que daría HTML inválido, porque dentro hay
+   un <h2> y un <time>— se estira el ::after del enlace "Leer más" sobre toda
+   la tarjeta. Sigue habiendo un solo enlace y el :hover del <a> se activa
+   desde cualquier punto, así que su subrayado ya funciona como feedback. */
+.anuncio-card__more::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.anuncio-card:hover {
+  background: var(--cream-light);
+}
+
+/* El foco de teclado cae en el <a>, pero el contorno debe verse en la
+   tarjeta, que es lo que el usuario percibe como el botón. */
+.anuncio-card:has(.anuncio-card__more:focus-visible) {
+  outline: 2px solid var(--azul);
+  outline-offset: 3px;
+}
+
+.anuncio-card__more:focus-visible {
+  outline: none;
+}
+
+.anuncio-card__label {
+  flex: 0 0 72px;
+  width: 72px;
+  margin: 0;
+  align-self: center;
+  color: var(--azul-label);
+  font-size: 15px;
+  font-weight: 400;
+  font-variation-settings: 'EXPO' -40;
+  line-height: normal;
+  overflow-wrap: break-word;
+}
+
+.anuncio-card__divider {
+  flex: 0 0 1px;
+  width: 1px;
+  align-self: stretch;
+  background: var(--black);
+}
+
+.anuncio-card__content {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  overflow: hidden;
+}
+
+.anuncio-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.anuncio-card__date {
+  color: var(--black);
+  font-size: 10.867px;
+  font-variation-settings: 'EXPO' -10;
+  line-height: normal;
+}
+
+.anuncio-card__more {
+  display: inline-flex;
+  align-items: center;
+  color: var(--black);
+  font-size: 10.867px;
+  font-variation-settings: 'EXPO' 0;
+  line-height: normal;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.anuncio-card__more:hover,
+.anuncio-card__more:focus-visible {
+  text-decoration: underline;
+}
+
+/* La flecha del diseño apunta hacia arriba; se rota para que apunte a la derecha. */
+.anuncio-card__arrow {
+  display: block;
+  transform: rotate(90deg);
+}
+
+.anuncio-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-wrap: break-word;
+}
+
+.anuncio-card__title {
+  margin: 0;
+  color: var(--azul-label);
+  font-family: var(--font-body);
+  font-size: 12.692px;
+  font-weight: 400;
+  font-variation-settings: 'EXPO' -40;
+  line-height: normal;
+}
+
+.anuncio-card__standfirst {
+  margin: 0;
+  color: var(--black);
+  font-size: 10.867px;
+  font-style: italic;
+  font-variation-settings: 'EXPO' -10;
+  line-height: normal;
+}
+
+.anuncio-card__body {
+  margin: 0;
+  color: var(--black);
+  font-size: 10.312px;
+  font-variation-settings: 'EXPO' 0;
+  line-height: normal;
+}
+
+/* En móvil la tarjeta ocupa el 90% del ancho de pantalla.
+   Se mide en vw (pantalla) y no en %, que sería el 90% del contenedor del
+   hero, ya recortado por sus ~60px de padding lateral; max-width: none anula
+   el tope de 22rem del escritorio.
+
+   El margin negativo es lo que la saca de ese padding. Sin él la tarjeta
+   desborda solo hacia la derecha: como es más ancha que el contenedor, el
+   align-items: center del hero no puede centrarla y la deja pegada al borde
+   izquierdo del contenido, empujando el resto fuera de pantalla.
+   Con (100% - 90vw) / 2 en cada lado —donde 100% es el ancho del contenedor—
+   el desborde se reparte por igual y queda centrada en pantalla, sin scroll
+   horizontal.
+
+   OJO: este @media va aquí, después de .anuncio-card, y no en el bloque
+   móvil grande de más arriba: allí tiene la misma especificidad pero aparece
+   antes en el archivo, y la regla base lo ganaba. */
+@media (max-width: 768px) {
+  .anuncio-card {
+    width: 90vw;
+    max-width: none;
+    margin-left: calc((100% - 90vw) / 2);
+    margin-right: calc((100% - 90vw) / 2);
+  }
+}
+
+/* =========================================================================
+   CONÓCENOS — motivo fijo a la izquierda, contenido con scroll a la derecha
+   y menú anclado arriba a la derecha.
+   ========================================================================= */
+
+/* La página no hace scroll: lo hace solo la columna derecha. Así el motivo
+   queda realmente fijo, sin depender del rango de un position: sticky, que
+   se agotaba antes de terminar el contenido y dejaba un hueco. */
+.conoce__layout {
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.conoce .visual {
+  height: 100%;
+}
+
+.conoce__right {
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Columna flex para que el footer se pegue abajo cuando el contenido no
+     llena la pantalla (pasa en los artículos cortos de Anuncios). Con
+     contenido largo el footer vuelve a fluir al final, como antes. */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sin esto el contenido se comprimiría en vez de generar scroll. */
+.conoce__inner {
+  flex: 0 0 auto;
+}
+
+.conoce__right > .footer {
+  margin-top: auto;
+}
+
+.conoce__inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 3vw;
+  /* Los 100px de abajo separan el último párrafo de la barra negra del
+     footer, que vive en esta misma columna con scroll. Aplica a Conócenos,
+     Anuncios y las páginas de detalle, que comparten este contenedor.
+     En móvil la regla de .conoce__inner usa el shorthand padding: 0 y lo
+     reinicia, así que este valor es solo de escritorio. */
+  padding: 2.5rem 4vw 100px;
+}
+
+.conoce__content {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 26rem;
+}
+
+/* Anclado al tope de la columna con scroll, no del viewport.
+   OJO: el top debe ser igual al padding-top de .conoce__inner (2.5rem). Con
+   top: 0 el menu recorria esos 40px antes de pegarse, y se veia como un
+   mini scroll del menu. Igualados, queda inmovil desde el primer pixel. */
+.conoce .masthead--sticky {
+  position: sticky;
+  top: 2.5rem;
+  flex: 0 0 auto;
+  margin-left: auto;
+}
+
+.conoce__section + .conoce__section {
+  margin-top: 4.5rem;
+}
+
+/* Los párrafos van sangrados respecto al título y al lead. */
+.conoce__prose {
+  margin-top: 1.4rem;
+  padding-left: 3.2rem;
+}
+
+.conoce__prose .body-text + .body-text {
+  margin-top: 1.1rem;
+}
+
+/* ---------- Paleta azul de Conócenos ---------- */
+.conoce .display-title {
+  color: var(--azul);
+}
+
+.conoce .lead {
+  color: var(--azul-label);
+}
+
+.conoce .body-text {
+  color: var(--black);
+  max-width: none;
+}
+
+/* En esta página el enlace activo va en azul, no en naranja. */
+.conoce .nav__link--active {
+  color: var(--azul);
+}
+
+@media (max-width: 768px) {
+  /* En móvil vuelve el scroll normal de la página: nada fijo ni anclado. */
+  .conoce__layout {
+    height: auto;
+    overflow: visible;
+  }
+
+  /* En móvil ninguna página de la familia .conoce —Conócenos, Anuncios y los
+     detalles de anuncio— lleva motivo textil. Se oculta el <aside> entero, no
+     solo el GIF: si no quedaría una franja azul vacía de 330px, porque el
+     color de fondo vive en el contenedor.
+     El Home (.hero) no entra aquí y sí conserva el motivo. */
+  .conoce .visual {
+    display: none;
+  }
+
+  .conoce__right {
+    height: auto;
+    overflow: visible;
+  }
+
+  .conoce__inner {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .conoce .masthead--sticky {
+    position: static;
+    order: -1;
+    margin-left: 0;
+    width: 100%;
+    padding: 32px 27px;
+  }
+
+  .conoce__content {
+    max-width: none;
+    padding: 0 27px 2rem;
+  }
+
+  .conoce__prose {
+    padding-left: 1.5rem;
+  }
+}
+
+/* =========================================================================
+   SÍGUENOS — el naranja se reemplaza por el azul del formulario.
+   Acotado a .form-page para no tocar el Home, que sigue en naranja.
+   ========================================================================= */
+/* OJO: .social__link ya no va en esta lista. El footer es un componente
+   compartido y sus íconos van en crema en todas las páginas. */
+.form-page .nav__link--active,
+.form-page .success__title,
+.form-page .brand--orange .brand__fallback {
+  color: var(--azul-form);
+}
+
+.form-page .field,
+.form-page .field:focus-within {
+  border-color: var(--azul-form);
+}
+
+.form-page .field__label {
+  color: var(--azul-form);
+}
+
+.form-page .btn {
+  background: var(--azul-form);
+}
+
+/* El menú de Síguenos va anclado arriba, como en Conócenos.
+   El top: 2.5rem debe coincidir con el padding superior de .content: si fuera
+   0, al hacer scroll el menú recorrería esos 40px antes de pegarse y quedaría
+   a distinta altura que en el resto de páginas. */
+.form-page .masthead {
+  position: sticky;
+  top: 2.5rem;
+  z-index: 2;
+}
+
+/* =========================================================================
+   ANUNCIOS — listado de tarjetas en la columna con scroll.
+   Comparte el layout y la paleta de Conócenos (ver clases .conoce* ).
+   ========================================================================= */
+.anuncios__list {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 30rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.anuncio-item {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: 26px;
+  padding: 1.1rem 1.5rem 1.4rem;
+  font-family: var(--font-body);
+  transition: background 0.15s ease;
+}
+
+/* La tarjeta entera es el CTA. En vez de envolverla en un <a> —que daria
+   HTML invalido, porque dentro hay un <h2> y un <time>— se estira el ::after
+   del enlace "Leer mas" sobre toda la tarjeta. Sigue habiendo un solo enlace
+   por tarjeta y el :hover del <a> se activa desde cualquier punto, asi que
+   el subrayado de "Leer mas" ya funciona como feedback. */
+.anuncio-item__more::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+.anuncio-item:hover {
+  background: var(--cream-light);
+}
+
+/* El foco de teclado cae en el <a>, pero el contorno debe verse en la
+   tarjeta, que es lo que el usuario percibe como el boton. */
+.anuncio-item:has(.anuncio-item__more:focus-visible) {
+  outline: 2px solid var(--azul);
+  outline-offset: 3px;
+}
+
+.anuncio-item__more:focus-visible {
+  outline: none;
+}
+
+.anuncio-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 0.7rem;
+}
+
+.anuncio-item__date,
+.anuncio-item__more {
+  font-size: 0.85rem;
+  font-variation-settings: 'EXPO' 0;
+  color: var(--black);
+  line-height: normal;
+}
+
+.anuncio-item__more {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.anuncio-item__more:hover,
+.anuncio-item__more:focus-visible {
+  text-decoration: underline;
+}
+
+.anuncio-item__title {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 400;
+  font-variation-settings: 'EXPO' -40;
+  line-height: 1.2;
+  color: var(--azul-label);
+}
+
+.anuncio-item__standfirst {
+  margin: 0 0 0.6rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  font-variation-settings: 'EXPO' -10;
+  line-height: 1.3;
+  color: var(--black);
+}
+
+/* En el diseño dos de las tarjetas llevan el antetítulo en negrita recta
+   en lugar de cursiva. Ver nota en la entrega. */
+.anuncio-item__standfirst--bold {
+  font-style: normal;
+  font-variation-settings: 'EXPO' -60;
+}
+
+.anuncio-item__body {
+  margin: 0;
+  font-size: 0.85rem;
+  font-variation-settings: 'EXPO' 0;
+  line-height: 1.35;
+  color: var(--black);
+}
+
+@media (max-width: 768px) {
+  .anuncios__list {
+    max-width: none;
+    padding: 0 27px 2rem;
+  }
+}
+
+/* =========================================================================
+   ANUNCIO — detalle de una entrada. Reutiliza el layout de Conócenos /
+   Anuncios (motivo fijo a la izquierda, columna con scroll a la derecha y
+   menú anclado): el <body> lleva "conoce" además de "articulo-page".
+   Aquí solo va la tipografía del artículo.
+   ========================================================================= */
+.articulo {
+  flex: 1 1 auto;
+  min-width: 0;
+  /* 26rem es el ancho de texto del resto del sitio. Se le suma la sangria de
+     .articulo__body para que el cuerpo mida esos 26rem y no menos. */
+  max-width: calc(26rem + 1.2rem);
+  font-family: var(--font-body);
+}
+
+.articulo__title {
+  margin: 0 0 0.5rem;
+  font-size: 2.1rem;
+  font-weight: 400;
+  font-variation-settings: 'EXPO' -40;
+  line-height: 1.1;
+  color: var(--azul);
+}
+
+.articulo__date {
+  display: block;
+  font-size: 0.9rem;
+  font-variation-settings: 'EXPO' 0;
+  line-height: normal;
+  color: var(--black);
+}
+
+/* El cuerpo va sangrado respecto al título y la fecha, como en el diseño.
+   Es una sangría corta (no la de 3.2rem de .conoce__prose). */
+.articulo__body {
+  margin-top: 2rem;
+  padding-left: 1.2rem;
+}
+
+.articulo__standfirst {
+  margin: 0 0 1.1rem;
+  font-size: 0.9rem;
+  font-style: italic;
+  font-variation-settings: 'EXPO' -10;
+  line-height: 1.35;
+  color: var(--black);
+}
+
+.articulo__heading {
+  margin: 2rem 0 1rem;
+  /* 1.55rem mantiene los subtitulos del diseno en una sola linea. */
+  font-size: 1.55rem;
+  font-weight: 400;
+  font-variation-settings: 'EXPO' -40;
+  line-height: 1.15;
+  color: var(--azul);
+}
+
+.articulo__text {
+  margin: 0;
+  font-size: 1rem;
+  font-variation-settings: 'EXPO' 0;
+  line-height: 1.45;
+  color: var(--black);
+}
+
+.articulo__text + .articulo__text {
+  margin-top: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .articulo {
+    max-width: none;
+    padding: 0 27px 2rem;
+  }
+
+  .articulo__title {
+    font-size: 1.8rem;
+  }
+
+  .articulo__heading {
+    font-size: 1.4rem;
   }
 }

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Antes que los textiles, las personas — MuTex</title>
+  <meta
+    name="description"
+    content="El museo empieza por las tejedoras: qué información trae consigo una pieza cuando llega a una colección."
+  />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Zilla+Slab:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap"
+    rel="stylesheet"
+  />
+  <!-- ?v= es cache busting: sin el, el navegador se queda con un styles.css
+       viejo y los cambios no se ven. Subir el numero en todas las paginas cada
+       vez que se publique un cambio de estilos. -->
+  <link rel="stylesheet" href="styles.css?v=22" />
+</head>
+
+<!-- PENDIENTE: el cuerpo es solo el extracto que se ve en la tarjeta de
+     anuncios.html. Falta el texto completo del articulo.
+     Estructura y estilos: ver anuncio-nace-un-museo.html (la plantilla). -->
+<body class="page conoce articulo-page">
+  <main class="layout conoce__layout">
+    <!-- ============ Columna izquierda: motivo textil ============ -->
+    <aside class="visual" aria-hidden="true">
+      <img
+        class="visual__art"
+        src="assets/motivo-textil.gif"
+        alt=""
+        draggable="false"
+        oncontextmenu="return false"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+      />
+      <svg class="visual__fallback" viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" role="presentation">
+        <defs>
+          <pattern id="huipil" width="50" height="50" patternUnits="userSpaceOnUse">
+            <rect width="50" height="50" fill="transparent" />
+            <path d="M25 3 L47 25 L25 47 L3 25 Z" fill="#000" />
+            <path d="M25 14 L36 25 L25 36 L14 25 Z" fill="#e8e5d9" />
+            <rect x="22" y="22" width="6" height="6" fill="#000" />
+          </pattern>
+        </defs>
+        <rect width="300" height="300" fill="url(#huipil)" />
+      </svg>
+    </aside>
+
+    <!-- ============ Columna derecha: artículo con scroll ============ -->
+    <div class="conoce__right">
+      <div class="conoce__inner">
+        <article class="articulo">
+          <h1 class="articulo__title">Antes que los textiles, las personas</h1>
+          <time class="articulo__date" datetime="2026-10-18">Oct 18, 2026</time>
+
+          <div class="articulo__body">
+            <p class="articulo__standfirst">El museo empieza por las tejedoras</p>
+
+            <p class="articulo__text">
+              Cuando una pieza llega a un museo, trae consigo algo de información: los materiales
+              con los que se hizo, una fecha aproximada, un lugar de origen. Con suerte, también
+              tiene el nombre de quien la creó.
+            </p>
+          </div>
+        </article>
+
+        <!-- Menu anclado. "Anuncios" activo porque el detalle pertenece a esa
+             seccion, pero sin aria-current: el enlace lleva a otra pagina. -->
+        <div class="masthead masthead--sticky">
+          <a href="index.html" aria-label="Inicio MuTex">
+            <img class="masthead__logo" src="assets/monograma.svg" alt="MuTex" />
+          </a>
+          <nav class="nav nav--stacked" aria-label="Navegación principal">
+            <a class="nav__link" href="conocenos.html">Conócenos</a>
+            <a class="nav__link" href="siguenos.html">Síguenos</a>
+            <a class="nav__link nav__link--active" href="anuncios.html">Anuncios</a>
+          </nav>
+        </div>
+      </div>
+
+      <!-- El footer vive dentro de la columna con scroll -->
+      <footer class="footer">
+        <ul class="social" aria-label="Redes sociales">
+          <li><a class="social__link" href="https://www.instagram.com/museotextildeantigua" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" stroke="none"/></svg></a></li>
+          <li><a class="social__link" href="https://www.facebook.com/profile.php?id=61590506050135" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7.5h2.5l.5-3h-3V8.5c0-.9.3-1.5 1.6-1.5H17V4.3c-.3 0-1.3-.1-2.4-.1-2.4 0-4.1 1.5-4.1 4.1V10.5H8v3h2.5V21h3Z"/></svg></a></li>
+          <li><a class="social__link" href="mailto:contacto@museotextildeantigua.com" aria-label="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5" stroke-linejoin="round"/></svg></a></li>
+        </ul>
+        <p class="footer__legal">Antigua, Guatemala<br />© 2026 MuTex</p>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>
