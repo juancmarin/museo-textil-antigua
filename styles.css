@@ -947,7 +947,12 @@ a {
 
   .visual {
     order: 3;
-    min-height: 330px;
+    /* El motivo ocupa la fila 1fr, así que crece con lo que sobre; esto es
+       solo su alto mínimo. Va proporcional al ancho, con la misma relación
+       del diseño (506 x 624, o sea alto = 1.233 x ancho): en un iPhone de
+       390px son 481px. El tope de 520px es para que en las pantallas que
+       rozan los 768px del breakpoint el motivo no se coma el alto entero. */
+    min-height: min(123.3vw, 520px);
   }
 
   .footer {
