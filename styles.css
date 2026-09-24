@@ -982,6 +982,12 @@ a {
   .hero .headline--center {
     font-size: min(5.435vw - 6.58px, 16.8px);
     max-width: 13.8em;
+    /* Sangría respecto al borde izquierdo del wordmark. En las dos
+       referencias mide lo mismo: un 23.7% del ancho de los rombos (69 de 291
+       en una, 75 de 316 en la otra). Como el ancho de los rombos es
+       0.987 x (100vw - 121px), la sangría sale 23.41vw - 28.3px: 63px en un
+       iPhone de 390. El tope acompaña al del wordmark. */
+    margin-left: min(23.41vw - 28.3px, 72.4px);
   }
 
   .visual {
