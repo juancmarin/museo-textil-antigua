@@ -1280,7 +1280,8 @@ a {
   overflow: hidden;
   width: 100%;
   max-width: 22rem;
-  margin-top: 2.5rem;
+  /* 25px = los 2.5rem del diseño menos 15px. */
+  margin-top: 25px;
   font-family: var(--font-body);
   /* El contenedor del hero centra el texto; la tarjeta va alineada a la izquierda. */
   text-align: left;
@@ -1444,9 +1445,9 @@ a {
     max-width: none;
     margin-left: calc(5vw - 60px);
     margin-right: calc(5vw - 61px);
-    /* 2.5rem del diseño + los 10px que se le quitaron al gap del hero, para
-       que la separación con el titular no cambie. */
-    margin-top: calc(2.5rem + 10px);
+    /* 35px = los 25px de la regla base más los 10px que se le quitaron al gap
+       del hero, para que el recorte de ese gap no afecte a esta separación. */
+    margin-top: 35px;
   }
 }
 
