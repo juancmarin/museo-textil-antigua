@@ -812,13 +812,18 @@ a {
     width: 30px;
   }
 
-  /* OJO: nada de justify-content: space-between ni width: 100% aquí. Eso
-     empujaba "Anuncios" contra el borde derecho y separaba los enlaces. */
+  /* El nav ocupa el ancho que queda a la derecha del monograma y reparte el
+     sobrante entre los enlaces con space-between. Así "Anuncios" termina justo
+     en el borde del padding y el aire de la derecha es igual al de la
+     izquierda (27px). Con gaps fijos y flex-start sobraban 10px al final.
+     El gap sigue actuando como separación mínima. */
   .nav--stacked {
+    flex: 1 1 auto;
     flex-direction: row;
-    justify-content: flex-start;
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
-    gap: 1.6rem;
+    gap: 0.8rem 1.6rem;
     width: auto;
     margin: 0;
     padding: 0;
