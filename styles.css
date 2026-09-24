@@ -886,7 +886,9 @@ a {
      queda igual que el hueco de escritorio. Como el gap separa a todos los
      hijos, la tarjeta recupera esos 10px con su propio margin-top más abajo. */
   .content__body--center {
-    padding: 68px 61px 67px 60px;
+    /* El padding superior es el hueco entre el menú y el wordmark: 53px son
+       los 68px del Figma móvil menos 15. */
+    padding: 53px 61px 67px 60px;
     gap: 32px;
   }
 
