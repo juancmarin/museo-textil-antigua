@@ -1781,7 +1781,8 @@ a {
 
 .articulo__title {
   margin: 0 0 0.5rem;
-  font-size: 2.1rem;
+  /* 1.89rem son los 2.1rem anteriores bajados un 10%. */
+  font-size: 1.89rem;
   font-weight: 400;
   font-variation-settings: 'EXPO' -40;
   line-height: 1.1;
@@ -1842,8 +1843,9 @@ a {
     padding: 0 27px 2rem;
   }
 
+  /* 1.62rem son los 1.8rem anteriores bajados un 10%. */
   .articulo__title {
-    font-size: 1.8rem;
+    font-size: 1.62rem;
   }
 
   /* 1.19rem son los 1.4rem anteriores bajados un 15%. */
