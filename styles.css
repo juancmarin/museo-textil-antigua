@@ -274,10 +274,12 @@ a {
   padding: 2rem 0;
 }
 
+/* OJO: el nombre "--center" es historico. El bloque del Home va alineado a la
+   izquierda, igual que el de Siguenos: mismos align-items y text-align, y sin
+   margin: 0 auto, que antes encogia la columna y la centraba. */
 .content__body--center {
-  align-items: center;
-  text-align: center;
-  margin: 0 auto;
+  align-items: flex-start;
+  text-align: left;
 }
 
 /* El bloque del Home (wordmark + titular + tarjeta) sube para quedar justo
@@ -332,10 +334,6 @@ a {
   width: clamp(184px, 23vw, 276px);
 }
 
-/* En el Home el bloque va centrado; en Síguenos, alineado a la izquierda. */
-.brand--hero .brand__wordmark {
-  margin: 0 auto;
-}
 
 /* Fallback de texto cuando el wordmark mosaico aún no está exportado */
 .brand__fallback {
@@ -893,6 +891,9 @@ a {
        abajo, de la tarjeta al motivo textil: 67px menos 30 = 37px. */
     padding: 53px 61px 37px 60px;
     gap: 32px;
+    /* La regla compartida de arriba centra a .content__body y a este; el Home
+       va a la izquierda, como Síguenos. */
+    align-items: flex-start;
   }
 
 
