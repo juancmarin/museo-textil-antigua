@@ -1822,11 +1822,13 @@ a {
   color: var(--azul);
 }
 
+/* Mismo tamaño y interlínea que .body-text, el cuerpo de Conócenos. Si se
+   cambia allí, cambiarlo aquí también (y en el @media móvil de más abajo). */
 .articulo__text {
   margin: 0;
-  font-size: 1rem;
+  font-size: clamp(0.92rem, 0.98vw, 1.15rem);
   font-variation-settings: 'EXPO' 0;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--black);
 }
 
@@ -1846,5 +1848,11 @@ a {
 
   .articulo__heading {
     font-size: 1.4rem;
+  }
+
+  /* Los mismos 13.57px / 1.35 que .body-text en móvil. */
+  .articulo__text {
+    font-size: 13.57px;
+    line-height: 1.35;
   }
 }
