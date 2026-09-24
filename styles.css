@@ -945,6 +945,32 @@ a {
     color: var(--black);
   }
 
+  /* Solo el Home y solo en móvil: el wordmark y el titular van centrados y un
+     20% más grandes. Van acotados a .hero (y no a .content__body--center) para
+     no tocar el wordmark de Síguenos, que comparte la regla de escritorio.
+
+     El centrado se aplica a estos dos hijos y no al contenedor: la tarjeta es
+     el tercer hijo, mide 90vw -y por tanto es más ancha que el contenedor-,
+     así que align-items no la centraría; ya se centra con sus propios
+     márgenes negativos. */
+  .hero .content__body--center .brand,
+  .hero .headline--center {
+    align-self: center;
+    text-align: center;
+  }
+
+  /* 184px del clamp de escritorio + 20% */
+  .hero .brand--hero .brand__wordmark {
+    width: 221px;
+  }
+
+  /* 16px + 20%, y el max-width sube igual (222 -> 266) para que el titular
+     siga partiéndose en dos líneas. */
+  .hero .headline--center {
+    font-size: 19.2px;
+    max-width: 266px;
+  }
+
   .visual {
     order: 3;
     /* El motivo ocupa la fila 1fr, así que crece con lo que sobre; esto es
