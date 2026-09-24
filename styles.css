@@ -297,18 +297,18 @@ a {
   /* OJO: el Home NO toca el padding superior de .content. Ese padding es lo
      que fija la altura del menú (top: 40px), y debe ser idéntico en todas las
      páginas. Para subir el bloque se usa solo el margen negativo de abajo. */
-  .hero .content__body--center {
-    /* El bloque sube metiéndose en la franja del menú. Son los 100px que se
-       pidieron más los 32px del padding de la columna, que antes se le
-       restaban a .content y descuadraban el menú respecto a Conócenos. */
-    margin-top: -132px;
-    padding-top: 0.75rem;
-    /* (Síguenos lleva el mismo -100px más abajo, en .form-page .content__body) */
-    /* La clave en pantallas altas: .content__body tiene flex: 1, así que crece
-       y le sobran hasta 160px por dentro; con justify-content: center el
-       bloque quedaba hundido a la mitad de esa holgura. Anclado arriba, el
-       sobrante se va todo abajo. En pantallas bajas no hay holgura y esta
-       línea no cambia nada. */
+  /* El Home y Síguenos comparten la posición vertical del bloque: mismo margen
+     negativo y mismo anclaje arriba.
+
+     El justify-content es imprescindible para que coincidan. .content__body
+     tiene flex: 1, así que en pantallas altas le sobra alto, y el center que
+     hereda repartía ese sobrante: como cada página tiene distinto alto de
+     contenido, el bloque caía a distinta altura en cada una (hasta 23px de
+     diferencia a 1600x1000). Anclados arriba, el sobrante se va todo abajo y
+     las dos arrancan en el mismo punto. */
+  .hero .content__body--center,
+  .form-page .content__body {
+    margin-top: -100px;
     justify-content: flex-start;
   }
 }
