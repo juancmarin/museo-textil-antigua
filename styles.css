@@ -729,8 +729,9 @@ a {
      (900-1100px) el título más largo siga cabiendo en la columna a escala 1.
      Con el mínimo alto se pasaba de ancho y el SVG se reducía, quedando más
      pequeño que los demás.
-     Los tres valores son los originales (1.4 / 2.55vw / 2.29) subidos un 10%. */
-  font-size: clamp(1.54rem, 2.8vw, 2.52rem);
+     Los tres valores son los originales (1.4 / 2.55vw / 2.29) subidos un 10%
+     y luego bajados un 5%: queda un +4.5% neto. */
+  font-size: clamp(1.46rem, 2.66vw, 2.39rem);
   line-height: 1;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -1041,10 +1042,11 @@ a {
     font-size: 12.88px;
   }
 
-  /* 33px y 35.41px son los 30px / 32.19px del diseño móvil subidos un 10%. */
+  /* Los 30px / 32.19px del diseño móvil subidos un 10% y bajados un 5%:
+     queda un +4.5% neto. */
   .display-title {
-    font-size: 33px;
-    line-height: 35.41px;
+    font-size: 31.35px;
+    line-height: 33.64px;
     margin: 0;
     max-width: none;
     font-weight: 900;
