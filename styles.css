@@ -1525,6 +1525,21 @@ a {
   .conoce__layout {
     height: auto;
     overflow: visible;
+    /* Estas dos reglas son las que dejan el footer abajo del navegador cuando
+       el contenido es corto (Anuncios con una sola tarjeta, por ejemplo).
+
+       min-height: hay que repetirlo porque la regla base de .conoce__layout
+       lo pone en 0 y eso anula el 100vh de .layout; sin un alto mínimo el
+       grid mide lo que mide su contenido y el margin-top: auto del footer no
+       tiene espacio libre que repartir.
+
+       grid-template-rows: el motivo textil está oculto en móvil, así que
+       .conoce__right es el único item; sin esto heredaba la plantilla de
+       .layout (auto auto 1fr auto), caía en la primera fila y el sobrante se
+       iba a la fila 1fr vacía, debajo del footer. */
+    min-height: 100vh;
+    min-height: 100dvh;
+    grid-template-rows: 1fr;
   }
 
   /* En móvil ninguna página de la familia .conoce —Conócenos, Anuncios y los
