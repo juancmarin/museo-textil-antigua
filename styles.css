@@ -325,8 +325,8 @@ a {
 }
 
 .brand--hero .brand__wordmark {
-  /* +20% respecto a clamp(180px, 24vw, 300px) */
-  width: clamp(216px, 28.8vw, 360px);
+  /* clamp(180px, 24vw, 300px) del diseño, +20% y luego +10%: +32% neto. */
+  width: clamp(238px, 31.68vw, 396px);
   margin: 0 auto;
 }
 
