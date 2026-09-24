@@ -1814,8 +1814,8 @@ a {
 
 .articulo__heading {
   margin: 2rem 0 1rem;
-  /* 1.55rem mantiene los subtitulos del diseno en una sola linea. */
-  font-size: 1.55rem;
+  /* 1.32rem son los 1.55rem anteriores bajados un 15%. */
+  font-size: 1.32rem;
   font-weight: 400;
   font-variation-settings: 'EXPO' -40;
   line-height: 1.15;
@@ -1846,8 +1846,9 @@ a {
     font-size: 1.8rem;
   }
 
+  /* 1.19rem son los 1.4rem anteriores bajados un 15%. */
   .articulo__heading {
-    font-size: 1.4rem;
+    font-size: 1.19rem;
   }
 
   /* Los mismos 13.57px / 1.35 que .body-text en móvil. */
