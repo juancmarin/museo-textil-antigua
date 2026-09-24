@@ -1396,20 +1396,26 @@ a {
    El margin negativo es lo que la saca de ese padding. Sin él la tarjeta
    desborda solo hacia la derecha: como es más ancha que el contenedor, el
    align-items: center del hero no puede centrarla y la deja pegada al borde
-   izquierdo del contenido, empujando el resto fuera de pantalla.
-   Con (100% - 90vw) / 2 en cada lado —donde 100% es el ancho del contenedor—
-   el desborde se reparte por igual y queda centrada en pantalla, sin scroll
-   horizontal.
+   izquierdo del contenido, empujando el resto fuera de pantalla. Y de paso
+   recentra el wordmark sobre ese ancho mayor, que también se corre.
 
-   OJO: este @media va aquí, después de .anuncio-card, y no en el bloque
-   móvil grande de más arriba: allí tiene la misma especificidad pero aparece
-   antes en el archivo, y la regla base lo ganaba. */
+   OJO: los márgenes van en vw y px, sin porcentajes. La versión anterior
+   usaba calc((100% - 90vw) / 2) y Safari de iOS descartaba la declaración:
+   en el iPhone la tarjeta quedaba en el borde del padding y se salía de la
+   pantalla. Restando el padding del hero en px no hay ningún porcentaje que
+   resolver, así que el cálculo no depende del contenedor.
+   Si cambia el padding lateral de .content__body--center (hoy 60px / 61px),
+   hay que cambiar estos dos valores.
+
+   Este @media va aquí, después de .anuncio-card, y no en el bloque móvil
+   grande de más arriba: allí tiene la misma especificidad pero aparece antes
+   en el archivo, y la regla base lo ganaba. */
 @media (max-width: 768px) {
   .anuncio-card {
     width: 90vw;
     max-width: none;
-    margin-left: calc((100% - 90vw) / 2);
-    margin-right: calc((100% - 90vw) / 2);
+    margin-left: calc(5vw - 60px);
+    margin-right: calc(5vw - 61px);
   }
 }
 
