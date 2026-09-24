@@ -881,10 +881,13 @@ a {
     align-items: center;
   }
 
-  /* Solo home: padding y gap específicos del Figma móvil */
+  /* Solo home: padding y gap específicos del Figma móvil.
+     El gap baja de 42px a 32px (-10) para acercar el titular al wordmark, y
+     queda igual que el hueco de escritorio. Como el gap separa a todos los
+     hijos, la tarjeta recupera esos 10px con su propio margin-top más abajo. */
   .content__body--center {
     padding: 68px 61px 67px 60px;
-    gap: 42px;
+    gap: 32px;
   }
 
 
@@ -1439,6 +1442,9 @@ a {
     max-width: none;
     margin-left: calc(5vw - 60px);
     margin-right: calc(5vw - 61px);
+    /* 2.5rem del diseño + los 10px que se le quitaron al gap del hero, para
+       que la separación con el titular no cambie. */
+    margin-top: calc(2.5rem + 10px);
   }
 }
 
