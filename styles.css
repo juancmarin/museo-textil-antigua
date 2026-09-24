@@ -725,10 +725,12 @@ a {
 .display-title {
   font-family: 'MTA Doble', var(--font-mosaic);
   font-weight: 400;
-  /* El mínimo es 1.4rem y no 1.8rem para que en ventanas angostas (900-1100px)
-     el título más largo siga cabiendo en la columna a escala 1. Con 1.8rem se
-     pasaba de ancho y el SVG se reducía, quedando más pequeño que los demás. */
-  font-size: clamp(1.4rem, 2.55vw, 2.29rem);
+  /* El mínimo es 1.54rem y no 1.98rem para que en ventanas angostas
+     (900-1100px) el título más largo siga cabiendo en la columna a escala 1.
+     Con el mínimo alto se pasaba de ancho y el SVG se reducía, quedando más
+     pequeño que los demás.
+     Los tres valores son los originales (1.4 / 2.55vw / 2.29) subidos un 10%. */
+  font-size: clamp(1.54rem, 2.8vw, 2.52rem);
   line-height: 1;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -1039,9 +1041,10 @@ a {
     font-size: 12.88px;
   }
 
+  /* 33px y 35.41px son los 30px / 32.19px del diseño móvil subidos un 10%. */
   .display-title {
-    font-size: 30px;
-    line-height: 32.19px;
+    font-size: 33px;
+    line-height: 35.41px;
     margin: 0;
     max-width: none;
     font-weight: 900;
