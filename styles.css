@@ -954,21 +954,34 @@ a {
      align-items no la centraría; ya se centra con sus propios márgenes
      negativos. */
   .hero .content__body--center .brand {
-    align-self: center;
+    align-self: stretch;
   }
 
-  /* 184px del clamp de escritorio + 20% */
+  /* El wordmark ocupa todo el ancho del bloque (269px en un iPhone de 390).
+     La referencia lo pone en un 70.7% del ancho de pantalla; con el padding
+     de 60/61px que ya tenía el bloque queda en un 68%, que es lo más cerca
+     que se puede sin romper ese padding. El tope de 309px es el valor que
+     alcanza en el móvil más ancho (430px): de ahí para arriba, ya en
+     tablets, deja de crecer. */
   .hero .brand--hero .brand__wordmark {
-    width: 221px;
+    width: min(100%, 309px);
   }
 
   /* El titular se queda alineado a la izquierda del bloque (hereda el
-     text-align: left de la regla de arriba, no lleva el align-self del
-     wordmark). 16px + 20% menos un 5% = 18.2px, y el max-width sube de 222 a
-     266 para que siga partiéndose en dos líneas. */
+     text-align: left de la regla de arriba, no el stretch del wordmark).
+
+     El tamaño sale de la proporción de la referencia: la primera línea mide
+     un 71.8% del ancho de los rombos del wordmark. Como el wordmark escala
+     con la pantalla, la letra tiene que escalar igual o la proporción se
+     pierde (con 14.6px fijos iba de 0.76 a 0.62 entre 375 y 430px). De ahí
+     el calc: el ancho del bloque es 100vw - 121px de padding, y la letra es
+     0.05435 de ese ancho. El tope acompaña al del wordmark.
+
+     El max-width va en em, no en px, para que escale con la letra y el
+     titular se parta siempre en las mismas dos líneas. */
   .hero .headline--center {
-    font-size: 18.2px;
-    max-width: 266px;
+    font-size: min(5.435vw - 6.58px, 16.8px);
+    max-width: 13.8em;
   }
 
   .visual {
