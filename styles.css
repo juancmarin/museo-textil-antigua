@@ -324,15 +324,17 @@ a {
   height: auto;
 }
 
-.brand--hero .brand__wordmark {
-  /* clamp(180px, 24vw, 300px) del diseño, +20% y luego +10%: +32% neto. */
-  width: clamp(238px, 31.68vw, 396px);
-  margin: 0 auto;
+/* El Home y Síguenos comparten el tamaño del wordmark a propósito: van en la
+   misma regla para que no se vuelvan a separar si se ajusta uno de los dos.
+   +15% sobre el tamaño base (clamp 160/20vw/240 -> 184/23vw/276). */
+.brand--hero .brand__wordmark,
+.brand--form .brand__wordmark {
+  width: clamp(184px, 23vw, 276px);
 }
 
-.brand--form .brand__wordmark {
-  /* +15% sobre el tamaño base (clamp 160/20vw/240 -> 184/23vw/276) */
-  width: clamp(184px, 23vw, 276px);
+/* En el Home el bloque va centrado; en Síguenos, alineado a la izquierda. */
+.brand--hero .brand__wordmark {
+  margin: 0 auto;
 }
 
 /* Fallback de texto cuando el wordmark mosaico aún no está exportado */
