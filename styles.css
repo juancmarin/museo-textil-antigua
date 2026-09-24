@@ -1546,12 +1546,15 @@ a {
     padding: 0;
   }
 
+  /* El padding debe ser el mismo que el de .masthead en móvil (20px 27px):
+     con 32px el menú de Conócenos, Anuncios y los detalles quedaba 12px más
+     abajo que el del Home. */
   .conoce .masthead--sticky {
     position: static;
     order: -1;
     margin-left: 0;
     width: 100%;
-    padding: 32px 27px;
+    padding: 20px 27px;
   }
 
   .conoce__content {
@@ -1592,11 +1595,18 @@ a {
 /* El menú de Síguenos va anclado arriba, como en Conócenos.
    El top: 2.5rem debe coincidir con el padding superior de .content: si fuera
    0, al hacer scroll el menú recorrería esos 40px antes de pegarse y quedaría
-   a distinta altura que en el resto de páginas. */
-.form-page .masthead {
-  position: sticky;
-  top: 2.5rem;
-  z-index: 2;
+   a distinta altura que en el resto de páginas.
+
+   OJO: va dentro de un @media min-width. En móvil el menú no se ancla en
+   ninguna página, y un sticky con top: 2.5rem empuja el elemento 40px hacia
+   abajo aunque no haya scroll, así que en el móvil de Síguenos el menú
+   arrancaba 40px más abajo que en el Home. */
+@media (min-width: 769px) {
+  .form-page .masthead {
+    position: sticky;
+    top: 2.5rem;
+    z-index: 2;
+  }
 }
 
 /* =========================================================================
