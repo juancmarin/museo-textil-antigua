@@ -1910,6 +1910,40 @@ a {
   margin-top: 1.2rem;
 }
 
+/* ---------- Notas al pie ----------
+   Elemento nuevo, no es un restyle de nada: lo pide el copy de "Germina un
+   museo", cuyo primer subtítulo lleva una llamada de nota. Si ninguna entrada
+   la usa, estas reglas no pintan nada. */
+
+/* La llamada va sin subrayado y hereda el azul del subtítulo: en el diseño es
+   solo un número volado, no se lee como un enlace. */
+.articulo__nota-ref {
+  color: inherit;
+  text-decoration: none;
+}
+
+.articulo__nota-ref sup {
+  /* line-height 0 para que el volado no abra la línea del subtítulo. */
+  font-size: 0.5em;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.articulo__notas {
+  margin-top: 2.5rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.45);
+}
+
+.articulo__notas-lista {
+  margin: 0;
+  /* El padding es lo que separa el número del texto, como en el diseño. */
+  padding-left: 1.8rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: var(--black);
+}
+
 @media (max-width: 768px) {
   .articulo {
     max-width: none;
@@ -1930,5 +1964,10 @@ a {
   .articulo__text {
     font-size: 13.57px;
     line-height: 1.35;
+  }
+
+  /* La nota baja en la misma proporción que el cuerpo. */
+  .articulo__notas-lista {
+    font-size: 11.5px;
   }
 }
