@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/anuncio-nace-un-museo.html",
+      "destination": "/anuncio-germina-un-museo.html",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/juguetico.html",
