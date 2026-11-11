@@ -269,7 +269,9 @@ Montado como Vercel Functions:
 >
 > `/api/guardar` responde `405` a GET, así que la función está desplegada y viva. No se probó el POST para no crear registros ni disparar correos reales, así que **no está verificado** que la ruta completa de guardado y envío funcione; dado que `galeria` no alcanza Supabase, lo más probable es que tampoco.
 
-**Runtime:** `package.json` fija `engines.node: "22.x"`. El ajuste del proyecto en Vercel dice `24.x`. **Los dos valores no coinciden**; `engines` tiene precedencia, así que las funciones deberían correr en 22. Conviene alinearlos para que nadie se confíe del número equivocado.
+**Runtime:** Node 22. Está fijado en dos sitios que **tienen que coincidir**: `engines.node: "22.x"` en `package.json` y el ajuste del proyecto en Vercel. Estuvieron desalineados (Vercel en 24.x) hasta el 11 de noviembre de 2026, cuando se bajó el ajuste de Vercel a 22.x para que el panel refleje lo que de verdad corre: `engines` tiene precedencia, así que las funciones ya venían corriendo en 22.
+
+> Node 22 entra en mantenimiento y se queda sin soporte en abril de 2027. Antes de esa fecha hay que subir los dos valores a la vez, y probar el Juguetico después: es el único código que corre en Node.
 
 **Persistencia:** [Supabase](https://supabase.com)
 - Tabla `designs` con `id`, `grid` (JSON con matriz binaria), `email`, `ts`, etc. El esquema está en `supabase-schema.sql`.
@@ -461,7 +463,7 @@ Revisadas una por una el 11 de noviembre de 2026.
 | Aviso de cookies | **Pendiente** | Nuevo desde que hay analytics. Decisión del cliente |
 | Política de privacidad | **Pendiente** | Hace falta por el formulario y ahora también por las cookies. No existe la página |
 | Copy de 3 páginas de anuncio | **Pendiente** | Llevan solo el extracto; marcadas con `PENDIENTE` en el HTML |
-| `engines.node` vs ajuste de Vercel | **Desalineado** | `package.json` dice 22.x, Vercel dice 24.x |
+| Subir Node antes de abril de 2027 | Pendiente, sin prisa | Node 22 pierde soporte entonces. Subir `engines.node` y el ajuste de Vercel a la vez, y probar el Juguetico |
 | Confirmar `RESEND_FROM` | **Sin verificar** | Mirar el panel de Vercel |
 | Cuota de Web3Forms | **Sin verificar** | 250/mes. Revisar antes de una campaña de lanzamiento |
 | Convertir fuentes a WOFF2 | Nice to have | Reduce peso 30-40% |
