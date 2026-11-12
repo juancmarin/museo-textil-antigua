@@ -31,6 +31,16 @@ if (GTM_ID) {
 
   window.gtag('js', new Date());
 
+  /* IMPRESCINDIBLE. Este push es el que arranca el contenedor: las etiquetas
+     de GTM cuelgan de un disparador que escucha el evento "gtm.js", y si no
+     se empuja, el contenedor carga pero no ejecuta nada.
+
+     El snippet que da Google en la pestaña "Instalar con un creador de sitios
+     web o un CMS" NO lo trae, y por eso el sitio estuvo cargando el
+     contenedor sin medir una sola visita. El de la pestaña "Instalar
+     manualmente" sí lo trae. No borrar. */
+  window.dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+
   /* dataLayer es una cola: da igual que gtm.js llegue despues, al cargarse
      procesa lo que ya se encolo arriba. */
   const tag = document.createElement('script');
