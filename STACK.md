@@ -2,7 +2,7 @@
 
 Guía completa de la pila técnica, servicios, recursos y decisiones del sitio del Museo Textil de Antigua y del aplicativo Juguetico. Pensada como punto de entrada para cualquier desarrollador que tome el proyecto.
 
-> **Última actualización: 11 de noviembre de 2026** (rama `main`, commit `39405c3`).
+> **Última actualización: 18 de noviembre de 2026** (rama `main`; el código del sitio va por `f90b8fd`).
 > Los datos marcados como verificados se comprobaron ese día contra el DNS público, el sitio en vivo, el repositorio y la API de Vercel.
 >
 > Versión en Notion, más legible y con el detalle de operación: https://app.notion.com/p/3c9c7169d89681ab953ce0aa29599234
@@ -226,15 +226,33 @@ Toda la tarjeta es clicable, con el patrón *stretched link*: `position: relativ
 
 ### 2.9 Analytics
 
-**Google Tag Manager**, contenedor `GTM-5QXZCPSV`, instalado el 11 de noviembre de 2026.
+**Funcionando desde el 18 de noviembre de 2026.** Verificado contra el sitio en vivo y contra el informe de Tiempo real: llegan `page_view`, `first_visit` y `session_start`.
 
-> ⚠️ **Está instalado pero todavía no mide nada.** Falta crear la etiqueta de GA4 dentro del contenedor y publicarlo, y eso se hace en tagmanager.google.com, no aquí.
+| Concepto | Valor |
+|----------|-------|
+| Contenedor de Tag Manager | `GTM-5QXZCPSV` (cuenta `6404341702`, contenedor `286423872`) |
+| Propiedad de GA4 | `G-F7738XTMFY` (cuenta `416061443`, propiedad `563982564`) |
+| Flujo de datos | `https://www.museotextildeantigua.com`, ID `16328443722` |
+| Titular de las dos cuentas | `contacto@museotextildeantigua.com`, el museo |
+| Dónde vive el ID del contenedor | `assets/analytics.js`, en una sola línea |
 
-El ID vive **solo** en `assets/analytics.js`, y cada página carga ese archivo. El snippet de Google se pega normalmente en el `<head>` de cada página, pero son nueve `<head>` escritos a mano y el ID acabaría repetido en nueve sitios. Funciona igual porque `dataLayer` es una cola: el archivo la inicializa antes de pedir `gtm.js`. Si se deja el ID vacío, el archivo no descarga nada ni pone cookies.
+El ID vive **solo** en `assets/analytics.js`, y cada página carga ese archivo. El snippet de Google se pega normalmente en el `<head>` de cada página, pero son nueve `<head>` escritos a mano y el ID acabaría repetido en nueve sitios. Si se deja el ID vacío, el archivo no descarga nada ni pone cookies.
 
 `juguetico.html` **no** lleva la etiqueta: es el embebido que irá dentro de WordPress, y medirlo mezclaría vistas de iframe con las del sitio.
 
-> ⚠️ **No hay aviso de cookies.** GA4 pone cookies y el RGPD exige consentimiento previo a los visitantes de la UE. Es una decisión pendiente del cliente, de la mano con la política de privacidad.
+> ⚠️ **Aviso de cookies: ahora sí hace falta.** Desde que mide, el sitio instala cookies (`_ga`, `_ga_F7738XTMFY`) a cada visitante. El RGPD exige consentimiento previo a los visitantes de la UE. Sigue sin haber aviso ni política de privacidad; es decisión del cliente.
+
+#### Dos trampas que costaron una semana
+
+Entre el 11 y el 18 de noviembre el contenedor cargaba sin medir nada. Eran dos fallos distintos, uno en cada lado:
+
+**1. Faltaba el push del evento `gtm.js` (lado del código).** El snippet que da Google en la pestaña *"Instalar con un creador de sitios web o un CMS"* no incluye `dataLayer.push({'gtm.start':..., event:'gtm.js'})`, y las etiquetas del contenedor cuelgan de un disparador que escucha justo ese evento. Sin él, `gtm.js` se descarga pero no dispara nada. El de la pestaña *"Instalar manualmente"* sí lo trae. Está corregido en `assets/analytics.js`, con un comentario; **no borrar esa línea.**
+
+**2. La etiqueta se cancelaba a sí misma (lado del panel).** Tenía `Initialization - All Pages` puesto a la vez como **activador** y como **excepción**. En Tag Manager la excepción gana siempre, así que la etiqueta nunca llegaba a ejecutarse. Se quitó la excepción y se publicó como versión 3 del contenedor.
+
+Cómo se diagnostica esto desde fuera sin acceso al panel, por si vuelve a pasar: descargar `https://www.googletagmanager.com/gtm.js?id=GTM-5QXZCPSV` y leer el objeto `data.resource`. Trae la versión publicada, las etiquetas y las reglas. Una regla con `["block", N]` es una excepción bloqueando la etiqueta N.
+
+> **Ojo: hay dos cuentas de Analytics duplicadas**, ambas llamadas "Museo Textil de Antigua". La buena es la de arriba. La otra (cuenta `415984393`, propiedad `563905680`, ID `G-9QDKVZ6YX2`) **no recibe datos ni los recibirá**, porque nada apunta a ella. Quien abra Analytics y caiga en esa va a ver informes vacíos y pensar que algo está roto. Conviene borrarla, pero lo decide el museo.
 
 ### 2.10 Cache busting de CSS
 
@@ -324,7 +342,8 @@ Vocabulario maya/textil (achiote = pigmento; sacbé = camino blanco).
 | **Resend** | Envío de email con PDF (Juguetico) | API key en env vars de Vercel |
 | **GoDaddy** | Registro del dominio y DNS | `museotextildeantigua.com`, nameservers `ns41/ns42.domaincontrol.com` |
 | **Google Workspace** | Correo del museo | MX del dominio |
-| **Google Tag Manager** | Analytics | Contenedor `GTM-5QXZCPSV` |
+| **Google Tag Manager** | Contenedor de las etiquetas de medición | `GTM-5QXZCPSV`, cuenta del museo |
+| **Google Analytics** | Medición del sitio | Propiedad `G-F7738XTMFY`, cuenta del museo. Ver 2.9 |
 | **Google Fonts** | Solo fallback (Zilla Slab, Instrument Sans) | CDN público |
 
 ### 4.1 Variables de entorno (Vercel)
@@ -459,8 +478,8 @@ Revisadas una por una el 11 de noviembre de 2026.
 | Tema | Estado | Acción |
 |------|--------|--------|
 | `api/galeria` devuelve 500 | **Roto, verificado** | Supabase inalcanzable. Resolver **antes** de publicar el Juguetico |
-| Etiqueta de GA4 | **Pendiente** | El contenedor de GTM está puesto, pero no mide nada hasta crear la etiqueta dentro y publicarlo |
-| Aviso de cookies | **Pendiente** | Nuevo desde que hay analytics. Decisión del cliente |
+| Aviso de cookies | **Pendiente, ya urgente** | El sitio mide desde el 18 nov y pone cookies a cada visitante. Decisión del cliente |
+| Borrar la cuenta de Analytics duplicada | **Pendiente** | `G-9QDKVZ6YX2` no recibe datos y confunde. Ver 2.9 |
 | Política de privacidad | **Pendiente** | Hace falta por el formulario y ahora también por las cookies. No existe la página |
 | Copy de 3 páginas de anuncio | **Pendiente** | Llevan solo el extracto; marcadas con `PENDIENTE` en el HTML |
 | Subir Node antes de abril de 2027 | Pendiente, sin prisa | Node 22 pierde soporte entonces. Subir `engines.node` y el ajuste de Vercel a la vez, y probar el Juguetico |
@@ -481,15 +500,14 @@ Para planificar el sitio definitivo en WordPress hacen falta datos que **no est�
 | Pregunta | Dónde se responde |
 |----------|-------------------|
 | Cómo se entró a GoDaddy en agosto para cambiar el DNS, y si ese acceso sigue vigente | Preguntarle a quien lo hizo. **No hay rastro en el historial de git**: el cambio se hizo en el panel |
-| Qué producto de hosting tiene contratado el museo en GoDaddy, y el nombre del plan | Panel de GoDaddy |
-| Si ya hay un WordPress instalado ahí | Panel de GoDaddy |
-| Si el plan incluye entorno de staging | Panel de GoDaddy |
 | Si el proyecto de Vercel sigue en plan Hobby | Panel de Vercel. La API no devuelve el plan |
 | Si `RESEND_FROM` está configurada | Panel de Vercel |
-| La lista completa de subdominios del dominio | Panel de GoDaddy |
+| Si el museo tiene hosting en otra cuenta o con otro proveedor | Preguntar. Solo se revisó la cuenta de GoDaddy conocida |
+| Qué servicio de correo usa de verdad el museo | Hay dos buzones de Microsoft 365 pagos en GoDaddy, pero el MX apunta a Google. **No tocar nada de correo hasta aclararlo** |
 
 Lo que sí está verificado y condiciona el plan:
 
+- **El museo no tiene ningún hosting contratado en su cuenta de GoDaddy** (revisado en el panel el 11 nov 2026). Solo los dos dominios, dos buzones de Microsoft 365 y el constructor de sitios gratuito. **No hay WordPress instalado**, así que la pregunta del staging no aplica todavía: primero hay que contratar un hosting, en GoDaddy o donde sea.
 - **No existe ningún subdominio**, así que `staging.` o `pruebas.` está libre.
 - **Los nameservers son de GoDaddy**, así que todo subdominio nuevo se crea allí.
 - **El correo del museo cuelga del mismo dominio.** Cualquier movimiento de DNS tiene que dejar MX y TXT intactos.
